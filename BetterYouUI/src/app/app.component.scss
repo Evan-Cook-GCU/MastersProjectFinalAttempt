@@ -1,0 +1,360 @@
+//imports global variables
+@use "../styles.scss" as vars;
+
+/* Header Styles */
+header {
+
+z-index: -1;
+justify-content: between;
+
+.logo-container {
+  width: 136px;
+  margin: 0px;
+
+  @media (max-width: 768px) {
+    margin: 0px;
+  }
+}
+.title-container {
+    display: flex;
+}
+#application {
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  @media (max-width: 768px) {
+    padding: 0;
+  }
+
+  .app-title-font,
+  .comp-title-font {
+    font-size: 28px;
+    color: vars.$primary-color;
+    margin: 0;
+
+    @media (max-width: 768px) {
+      padding: auto;
+      margin: auto 10px;
+    }
+  }
+}
+
+}
+
+/* Navigation Styles */
+#mainNav {
+background-color: vars.$navbar-bg-color;
+height: 25px;
+
+@media (max-width: 768px) {
+height: auto;
+}
+.navbar {
+padding: 0;
+
+.nav-bar-item {
+  display: flex;
+  left: 150px;
+
+
+  a {
+    color: #FFF;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 10px 15px;
+    position: relative;
+    display: block;
+    line-height: 10px;
+	
+
+    &:hover {
+      background-color: white;
+      color: #005e9e;
+    }
+
+    &:active {
+      background-color: vars.$primary-color;
+      color: #005e9e;
+	  
+    }
+  }
+}
+
+}
+}
+/* Search Bar Styles */
+.searchbar {
+background-color: #f5f7fa;
+border-radius: 30px;
+padding: 1px;
+position: relative;
+max-width: 200px;
+width: 100%;
+height: 20px;
+margin-left: auto;
+.search_input {
+color: vars.$primary-color;
+border: 0;
+outline: 0;
+background: none;
+caret-color: vars.$primary-color;
+margin: 2px 0;
+font-size: 12px;
+width: 100%;
+padding: 5px;
+}
+.fa-search {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+}
+}
+
+/* Side Bar Styles */
+	app-side-bar {
+		flex: 0 0 100px;
+		display: block;
+		width: 150px;
+		height: 100vh;
+		background-color: #e9e9e9;
+		box-shadow: 5px 4px 4px #ccc;
+		margin-right: 20px;
+	}
+
+/* Table Styles */
+$color_1: #333;
+$color_2: #222;
+$color_3: #FFF;
+$color_4: white;
+$color_5: #005e9e;
+$font-family_1: 'FontAwesome\ Free';
+$font-family_2: 'Font Awesome';
+$font-family_3: "Font Awesome 5 Free";
+$background-color_1: #FFF;
+$background-color_2: #f7f7f7;
+$background-color_3: white;
+$background-color_4: #E0F1FF;
+$background-color_5: #1272B3;
+$background-color_6: #005e9e;
+$background-color_7: #f5f7fa;
+$border-color_1: #005e9e;
+
+/* CREATED ON 07-15-2019 BY BRANDAN NAEF */
+/* CSS Style Sheet*/
+@import "https://use.fontawesome.com/releases/v5.8.1/css/all.css";
+/* ----------------------- Main Page Elements ----------------------- */
+/* ----------------------- END Main Page Elements ----------------------- */
+/* ----------------------- Dropdown Icon Rotation Elements ----------------------- */
+/* ----------------------- END Dropdown Icon Rotation Ele ments ----------------------- */
+/* ----------------------- Left Column Elements ----------------------- */
+/* ----------------------- END Left Column Elements ----------------------- */
+/* ----------------------- Table Styling ----------------------- */
+/* below is styles that alter the pagination & icons*/
+/* ----------------------- END Table Styling ----------------------- */
+/* ----------------------- Media Queries ----------------------- */
+/* --------- Table Styling -------- */
+/* --------- END Table Styling -------- */
+/* ----------------------- END Media Queries ----------------------- */
+#page {
+	background-color: $background-color_1 !important;
+}
+.column {
+	height: auto;
+	border-radius: 15px;
+	background-color: $background-color_2;
+}
+.icon-rotates {
+	-moz-transition: all .5s linear;
+	-webkit-transition: all .5s linear;
+	transition: all .5s linear;
+}
+.icon-rotates.rotate {
+	-moz-transition: rotate(-90deg);
+	-webkit-transition: rotate(-90deg);
+	transition: rotate(-90deg);
+}
+.dropdown.collapsed {
+	.icon-rotates {
+		-webkit-transform: rotate(-90deg);
+		transform: rotate(-90deg);
+	}
+}
+.filter-title {
+	text-align: left !important;
+	font-size: 18px;
+}
+.filter-items {
+	font-size: 14px !important;
+	color: $color_1;
+	width: 100%;
+}
+#leftSearch {
+	background-color: $background-color_3;
+	margin: 10px 0;
+}
+#filter {
+	padding: 0px !important;
+	margin-left: 0px !important;
+}
+input[type=checkbox] {
+	display: flex;
+	justify-content: flex-start;
+}
+label.form-check {
+	padding: 0px 0px 0px 0px !important;
+	text-align: left !important;
+	margin-left: 10px;
+}
+.card-header {
+	padding-left: 10px !important;
+	text-align: left;
+	width: 100%;
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+}
+.table-striped {
+	>tbody {
+		>tr {
+			&:nth-child(2n+1) {
+				>td {
+					background-color: $background-color_4;
+				}
+				>th {
+					background-color: $background-color_4;
+				}
+			}
+		}
+	}
+}
+#table-title {
+	color: $color_2;
+	font-size: 16px;
+	float: left;
+}
+.tb-head {
+	background-color: $background-color_5;
+	color: $color_3;
+	font-size: 14px !important;
+	text-align: left !important;
+}
+.theadL {
+	border-radius: 8px 0 0 0;
+}
+.theadR {
+	border-radius: 0 8px 0 0;
+}
+td {
+	font-size: 14px !important;
+}
+.paginate_button.active {
+	>a {
+		background-color: $background-color_6 !important;
+		color: $color_4 !important;
+		border-color: $border-color_1 !important;
+	}
+}
+.fas.fa-angle-left {
+	color: $color_5 !important;
+}
+.fa.fa-angle-left {
+	font-size: 25px !important;
+	&::before {
+		font-size: 16px !important;
+	}
+}
+.fa.fa-angle-right {
+	font-size: 25px !important;
+	&::before {
+		font-size: 16px !important;
+	}
+}
+.fa.fa-angle-double-right {
+	font-size: 25px !important;
+}
+.fa.fa-angle-double-left {
+	font-size: 25px !important;
+}
+table.dataTable {
+	thead {
+		th {
+			position: relative;
+			background-image: none !important;
+		}
+		th.sorting {
+			&:after {
+				position: absolute;
+				top: 10px;
+				right: 5px;
+				display: block;
+				font-family: $font-family_1;
+				content: "\f0dc";
+				color: $color_3;
+				font-size: 15px;
+				padding-top: 0.12em;
+			}
+		}
+		th.sorting_asc {
+			&:after {
+				position: absolute;
+				top: 10px;
+				right: 5px;
+				display: block;
+				font-family: $font-family_1;
+				content: "\f0de";
+			}
+		}
+		th.sorting_desc {
+			&:after {
+				position: absolute;
+				top: 10px;
+				right: 5px;
+				display: block;
+				font-family: $font-family_1;
+				content: "\f0dd";
+				font-family: $font-family_2;
+				font-weight: 900;
+			}
+		}
+	}
+}
+.dataTables_filter {
+	input {
+		background-color: $background-color_7;
+		border-radius: 30px !important;
+		-webkit-border-radius: 30px !important;
+		padding-bottom: 2px;
+	}
+}
+@media (max-width: 1354px) {
+	table.dataTable {
+		thead {
+			th.sorting {
+				&:after {
+					position: absolute;
+					top: 15px;
+					right: 5px;
+					display: block;
+					font-family: $font-family_3;
+				}
+			}
+			th.sorting_asc {
+				&:after {
+					position: absolute;
+					top: 15px;
+					right: 5px;
+					display: block;
+					font-family: $font-family_3;
+				}
+			}
+			th.sorting_desc {
+				&:after {
+					position: absolute;
+					top: 15px;
+					right: 5px;
+					display: block;
+					font-family: $font-family_3;
+				}
+			}
+		}
+	}
+}

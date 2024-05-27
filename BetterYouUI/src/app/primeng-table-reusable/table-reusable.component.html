@@ -1,0 +1,55 @@
+<div class="card">
+    <p-table
+        #dt1
+        [columns]="tableHeaders"
+        [value]="tableData"
+        dataKey="id"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10, 15, 20]"
+        [loading]="loading"
+        [paginator]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        styleClass="p-datatable-striped"
+        [globalFilterFields]=""
+        [rowHover]="true"
+        >
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                <button pButton label="Clear" class="p-button-outlined" icon="fa fa-filter" (click)="clear(dt1)"></button>
+                <span class="p-input-icon-left ms-auto">
+                    <i class="fa fa-search"></i>
+                    <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th></th>
+                @for (column of tableHeaders; track column) {
+                    <th pSortableColumn="{{column.field}}">
+                        <div class="flex align-items-center">
+                            {{ column.header }}
+                        </div>
+                        <p-sortIcon field="{{column.field}}"></p-sortIcon>
+                    </th>
+                }
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-data="tableData">
+                <tr>
+                    @for (col of columns; track col) {
+                        <td class="flex text-center">
+                            {{ rowData[col.field] }}
+                        </td>
+                    }
+                </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7">No submissions found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

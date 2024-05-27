@@ -1,0 +1,61 @@
+<body>
+    <!--Creates the Header with logo, Application name, and Search bar. -->
+    <header class=" container-fluid" id="header">
+
+        <div class="row justify-content-between header-info">
+            <div class="col-xl-1 col-lg-1 col-md-2 my-auto" id="logo-div">
+                <img src="../assets/images/Icon.jpg" id="logo" alt="Logo">
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 my-auto" id="application">    
+                <h3 class="font-weight-normal comp-title-font" style="color:#646464; ">Better You Social</h3>
+            </div>
+                    
+            <div class="col-xl-3 col-lg-3 col-md-3 d-flex justify-content-md-center mt--xl-2 mt-lg-2 mt-sm-0" style="position: relative;">
+                <div class="my-2" id="searchbar">
+                    <div class="d-flex">
+                        <div class="searchbar">
+                            <input class="search_input inline" type="text" name="" placeholder="Search...">
+                            <a href="#" class="search_icon"><i class="fa fa-search"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Creates the Navigation menu for the application -->
+    <div class="nav" id="mainNav">
+        <nav class="navbar navbar-expand-md navbar-light nav-alignment px-3" id="nav-alignmentID">
+            <button class="navbar-toggler customer-toggler ml-auto" type="button" (click)="toggleNavbar()">
+                <span class=""><i class="fa fa-bars"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" [class.show]="navbarOpen" id="navbarContent">            
+                <ul class="navbar-nav">
+                    <a class="nav-item nav-link  my-auto main" id="documentation" href="../index.html"><span><i class="fa fa-home"></i></span>Documentation</a>
+                    <a class="nav-item nav-link  my-auto main" id="error-example" href="../table_examples/table">Error Example</a>
+                    <a [routerLink]="['/table-example']" routerLinkActive="router-link-active"  class="nav-item nav-link  my-auto main" id="table-examples">Table Examples</a>
+                    <a [routerLink]="['/primeng-table-example']" routerLinkActive="router-link-active"  class="nav-item nav-link  my-auto main" id="primeNg-table-example">PrimeNg Table Examples</a>
+                    <a [routerLink]="['/layout-1']" routerLinkActive="router-link-active"  class="nav-item nav-link  my-auto main" id="layout-1">Layout 1</a>
+                    <a [routerLink]="['/layout-2']" routerLinkActive="router-link-active"  class="nav-item nav-link  my-auto main" id="layout-2">Layout 2</a>
+                    <a [routerLink]="['/layout-3']" routerLinkActive="router-link-active"  class="nav-item nav-link  my-auto main" id="layout-3">Layout 3</a>
+                    <a [routerLink]="['/layout-4']" routerLinkActive="router-link-active"  class="nav-item nav-link  my-auto main" id="layout-4">Layout 4</a>
+                    <a [routerLink]="['/reactive-form']" routerLinkActive="router-link-active"  class="nav-item nav-link  my-auto main" id="reactive-form">Reactive Form</a>
+                
+                    <div class="dropdown nav-item main" id="navitems">
+                        <a class=" dropdown-toggle" id="dropdown-menu-link" role="button" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>Admin</a>
+                        
+                        <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                            <a *ngIf="(authorizedAppFunctions$ | async)!.includes('admin/user')"
+                            class="nav-item nav-link dropdown-items" routerLink="admin/user" id="admin-users">Admin Users</a>
+                            <a *ngIf="(authorizedAppFunctions$ | async)!.includes('admin/app-function-group/edit')"
+                            class="nav-item nav-link my-auto dropdown-items" routerLink="admin/app-function-group/edit" id="edit-app-function-groups">Edit App-Function Groups</a>
+                            <a *ngIf="(authorizedAppFunctions$ | async)!.includes('admin/call-permission-group/edit')"
+                            class="nav-item nav-link my-auto dropdown-items" routerLink="admin/call-permission-group/edit" id="edit-call-permission-groups">Edit Call-Permission Groups</a>
+                        </ul>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</body>
+
+

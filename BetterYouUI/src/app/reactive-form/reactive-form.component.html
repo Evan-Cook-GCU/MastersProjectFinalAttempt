@@ -1,0 +1,91 @@
+<form [formGroup]="formGroup1">
+    <h4>formGroup1</h4>
+    <form>
+        <div class="form-row">
+          <div class="col-sm-2">
+            <label for="first-name">formControl1: </label>
+          </div>
+          <div class="col">
+            <input id="first-name" type="text" class="form-control" formControlName="formControl1">
+          </div>
+        </div>
+    </form>
+    <form>
+        <div class="form-row">
+          <div class="col-sm-2">
+            <label for="last-name">formControl2: </label>
+          </div>
+          <div class="col">
+            <input id="last-name" type="text" class="form-control" formControlName="formControl2">
+          </div>
+        </div>
+    </form>
+    
+    <div formGroupName="formGroup2">
+        <h4>formGroup2</h4>
+        <form>
+            <div class="form-row">
+              <div class="col-sm-2">
+                <label for="street">subFormControl1: </label>
+              </div>
+              <div class="col">
+                <input id="street" type="text" class="form-control" formControlName="subFormControl1">
+              </div>
+            </div>
+        </form>
+        <form>
+            <div class="form-row">
+              <div class="col-sm-2">
+                <label for="city">subFormControl2: </label>
+              </div>
+              <div class="col">
+                <input id="city" type="text" class="form-control" formControlName="subFormControl2">
+              </div>
+            </div>
+        </form>
+        <form>
+            <div class="form-row">
+              <div class="col-sm-2">
+                <label for="state">subFormControl3: </label>
+              </div>
+              <div class="col">
+                <input id="state" type="text" class="form-control" formControlName="subFormControl3">
+              </div>
+            </div>
+        </form>
+        <form>
+            <div class="form-row">
+              <div class="col-sm-2">
+                <label for="zip">subFormControl4: </label>
+              </div>
+              <div class="col">
+                <input id="zip" type="text" class="form-control" formControlName="subFormControl4">
+              </div>
+            </div>
+        </form>
+    </div>
+
+    
+    <div formArrayName="formArray">
+        <h4>dynamicFormArray</h4>
+        <button type="button" class="btn-primary" (click)="addAlias()">+ Add another formControl</button>
+      
+        <div *ngFor="let alias of formArray.controls; let i=index">
+          <!-- The repeated alias template -->
+          <form>
+            <div class="form-row">
+              <div class="col-sm-2">
+                <label for="formArray-{{ i }}">formControl:</label>
+              </div>
+              <div class="col">
+                <input id="formArray-{{ i }}" type="text" class="form-control" [formControlName]="i">
+              </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</form>
+<form [formGroup]="formGroup1" (ngSubmit)="onSubmit()"></form>
+
+<p>Complete the form to enable button.</p>
+<button type="submit" class="btn-primary" [disabled]="!formGroup1.valid">Submit</button>

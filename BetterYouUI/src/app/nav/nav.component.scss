@@ -1,0 +1,288 @@
+$color_1: #222;
+$color_2: #005999;
+$color_3: #3da1d6;
+$color_4: #2B426B;
+$color_5: #777;
+$color_8: #FFF;
+$color_9: #005e9e;
+$color_10: #444;
+$font-family_1: 'Source Sans Pro', sans-serif;
+$font-family_2: 'Open Sans', sans-serif;
+$background-color_1: white;
+$background-color_2: #f5f7fa;
+$border-color_1: #FFF;
+
+h1 {
+	font-family: $font-family_1;
+	color: $color_1;
+	font-size: 30px;
+	line-height: 28px;
+}
+h2 {
+	color: $color_1;
+	font-size: 23px;
+	line-height: 25px;
+}
+h3 {
+	color: $color_1;
+	font-size: 17px;
+	line-height: 21px;
+}
+a {
+	&:link {
+		color: $color_2;
+		border-bottom: 1px #005999;
+		color: $color_2 !important;
+		border-bottom: none !important;
+	}
+	&:hover {
+		color: $color_3;
+		border-bottom: 1px #3CA1D7;
+		color: $color_3 !important;
+	}
+	&:focus {
+		color: $color_3;
+		border-bottom: 1px #3CA1D7 dotted;
+		color: $color_3 !important;
+	}
+	&:visited {
+		color: $color_4;
+		border-bottom: 1px #2B426B dotted;
+		color: $color_4 !important;
+	}
+	&:active {
+		padding-top: 2px;
+		color: $color_3 !important;
+	}
+}
+a.dropdown-items {
+	color: $color_10;
+	line-height: 25px;
+	font-size: 12px;
+	list-style: none;
+	font-family: $font-family_1;
+	box-sizing: border-box;
+	padding: 0px;
+}
+body {
+	font-family: $font-family_2;
+	color: $color_1;
+	font-size: 14px !important;
+	line-height: 21px !important;
+}
+.app-title-font {
+	font-size: 28px;
+	color: $color_5;
+	margin: 0px !important;
+}
+.dropdown {
+	&:hover {
+		background-color: $background-color_1;
+		color: $color_9 !important;
+	}
+}
+.dropdown-menu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1000;
+	float: left;
+	min-width: 160px;
+	padding: 5px 0;
+	margin: 2px 0 0;
+	font-size: 12px;
+}
+.powersource {
+	background-color: $background-color_1;
+}
+.comp-title-font {
+	font-size: 15px;
+	color: $color_5;
+	margin: 0px !important;
+}
+.searchbar {
+	margin-bottom: auto;
+	margin-top: auto;
+	height: auto;
+	background-color: $background-color_2;
+	border-radius: 30px;
+	padding-bottom: 2px;
+	>.search_input {
+		padding: 0 10px;
+		width: 150px;
+		caret-color: #777;
+	}
+}
+.search_input {
+	color: $color_5;
+	border: 0;
+	outline: 0;
+	background: none;
+	width: 0;
+	caret-color: transparent;
+	margin: 2px 0;
+	transition: width 0.4s linear;
+	font-size: 12px;
+}
+.fa-search {
+	position: relative;
+	left: -5px;
+}
+.navbar-nav {
+	>a {
+		padding: 0px 12.5px;
+		color: $color_8;
+	}
+}
+.fa.fa-bars {
+	color: $color_8;
+	border-color: $border-color_1;
+	z-index: 3;
+}
+.navbar-light {
+	.navbar-toggler {
+		border: 0px;
+	}
+}
+.navbar {
+	padding: 0px !important;
+}
+.nav-bar-item {
+	display: flex !important;
+	left: 150px !important;
+}
+#mainNav {
+	background-color: $color_9;
+	height: 25px;
+}
+#logo {
+	width: 136px;
+	margin: auto 0;
+	-ms-margin: auto 0;
+	margin-left: 75px;
+	margin: 27px 0px 25px auto;
+}
+#logoLink {
+	border-bottom: none !important;
+}
+#application {
+	padding-top: 27px;
+	padding-bottom: 25px;
+}
+#header {
+	background-repeat: no-repeat;
+	background-attachment: scroll;
+	background-position: center center;
+	background-size: 2000px;
+	z-index: -1;
+}
+#navitems {
+	width: auto !important;
+}
+a.headerLinks {
+	text-decoration: none;
+	font-size: 15px;
+}
+a.main {
+	&:link {
+		border-bottom: none;
+	}
+	color: $color_8 !important;
+	text-decoration: none !important;
+	font-size: 12px;
+	&:hover {
+		background-color: $background-color_1 !important;
+		color: $color_9 !important;
+	}
+	&:active {
+		background-color: $color_5;
+		color: $color_9;
+	}
+}
+.main {
+	&:link {
+		border-bottom: none;
+	}
+	color: $color_8 !important;
+	text-decoration: none !important;
+	font-size: 12px;
+	&:hover {
+		background-color: $background-color_1 !important;
+		color: $color_9 !important;
+	}
+	&:active {
+		background-color: $color_5;
+		color: $color_9;
+	}
+}
+@media (max-width:768px) {
+	#mainNav {
+		height: auto;
+	}
+	#logo {
+		margin: 5px 0px 0px 10px !important;
+		padding: 0px !important;
+	}
+	#logoDiv {
+		padding: 0px !important;
+	}
+	.app-title-font {
+		padding: auto !important;
+		margin: auto 10px !important;
+	}
+	.comp-title-font {
+		padding: auto !important;
+		margin: auto 10px !important;
+	}
+	#application {
+		padding: 0px !important;
+	}
+	#header {
+		background-size: cover !important;
+	}
+	.search_input {
+		&:focus {
+			width: 235px !important;
+		}
+	}
+}
+@media (min-width:769px) {
+	#searchbar {
+		position: absolute;
+		top: 30%;
+	}
+	#nav-alignmentID {
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+@media (min-width:992px) {
+	.nav-alignment {
+		margin-left: 16.8% !important;
+	}
+}
+
+/* Targets the Admin dropdown toggle directly */
+#dropdown-menu-link {
+    color: $color_8 !important; 
+    text-decoration: none !important; 
+
+    &:hover, &:focus {
+        color: $color_9 !important; 
+    }
+}
+
+/* Adjust the Admin text color when hovering over dropdown items */
+.dropdown:hover > #dropdown-menu-link {
+    color: $color_9 !important; 
+}
+
+/* Style for dropdown items */
+.dropdown-menu .nav-item .nav-link {
+    color: $color_1 !important; 
+
+    &:hover {
+        color: $color_8 !important; 
+        background-color: $color_9 !important; 
+    }
+}
