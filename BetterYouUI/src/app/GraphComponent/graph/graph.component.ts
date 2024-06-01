@@ -2,6 +2,10 @@ import { CommonModule } from "@angular/common";
 import { Component, ViewChild } from "@angular/core";
 import { ChartConfiguration, ChartType, ChartEvent, registerables, Chart } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
+import { MetricDataService } from "../../services/MetricDataService/MetricDataService";
+import { MetricData } from "../../Models/Models";
+
+
 
 Chart.register(...registerables);  // Register all the components
 @Component({
@@ -86,6 +90,30 @@ export class GraphComponent {
   public lineChartType: ChartType = 'line';
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
+
+  constructor(private dataService: MetricDataService) {
+    this.dataService.metricData$.subscribe((data) => {
+      this.updateChart(data);
+    });
+  }
+  private updateChart(data: MetricData[]): void {
+    this.lineChartData.datasets = [
+      {
+        data: data.map((entry) => JSON.parse(entry.dataValue).weight),
+        label: 'Weight',
+        backgroundColor: 'rgba(148,159,177,0.2)',
+        borderColor: 'rgba(148,159,177,1)',
+      },
+      {
+        data: data.map((entry) => JSON.parse(entry.dataValue).reps),
+        label: 'Reps',
+        backgroundColor: 'rgba(77,83,96,0.2)',
+        borderColor: 'rgba(77,83,96,1)',
+      },
+    ];
+    this.lineChartData.labels = data.map((entry) => entry.dataDate.toDateString());
+    this.chart?.update();
+  }
 
   private static generateNumber(i: number): number {
     return Math.floor(Math.random() * (i < 2 ? 100 : 1000) + 1);
