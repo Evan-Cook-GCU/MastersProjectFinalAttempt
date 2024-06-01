@@ -1,0 +1,6 @@
+<button (click)="login()">Login with Google</button>
+<button (click)="logout()">Logout</button>
+<div *ngIf="user">
+  <h3>Welcome {{ user.displayName }}</h3>
+  <img [src]="user.photoURL" alt="{{ user.displayName }}" />
+</div>
