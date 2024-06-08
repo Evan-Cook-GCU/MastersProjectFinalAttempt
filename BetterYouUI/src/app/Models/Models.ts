@@ -38,6 +38,6 @@ export interface UserMetric {
 export interface MetricData {
     metricDataId: number;
     userMetricId: number;
-    dataValue: string;
+    dataValue: { [key: string]: number }; // Dynamic keys for metric data
     dataDate: Date;
 }
