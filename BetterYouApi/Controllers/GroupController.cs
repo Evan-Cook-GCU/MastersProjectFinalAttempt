@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using BetterYouApi.Models;
@@ -9,20 +8,20 @@ namespace BetterYouApi.Controllers
     [RoutePrefix("api/groups")]
     public class GroupController : ApiController
     {
-        private static List<Group> groups = new List<Group>();
+        private BetterYouContext context = new BetterYouContext();
 
         [HttpGet]
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            return Ok(groups);
+            return Ok(context.Groups.ToList());
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public IHttpActionResult Get(int id)
         {
-            var group = groups.FirstOrDefault(g => g.GroupId == id);
+            var group = context.Groups.FirstOrDefault(g => g.GroupId == id);
             if (group == null)
             {
                 return NotFound();
@@ -34,9 +33,9 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult Create(Group group)
         {
-            group.GroupId = groups.Count + 1;
             group.CreatedAt = DateTime.Now;
-            groups.Add(group);
+            context.Groups.Add(group);
+            context.SaveChanges();
             return Created(new Uri(Request.RequestUri + "/" + group.GroupId), group);
         }
 
@@ -44,13 +43,14 @@ namespace BetterYouApi.Controllers
         [Route("{id:int}")]
         public IHttpActionResult Update(int id, Group group)
         {
-            var existingGroup = groups.FirstOrDefault(g => g.GroupId == id);
+            var existingGroup = context.Groups.FirstOrDefault(g => g.GroupId == id);
             if (existingGroup == null)
             {
                 return NotFound();
             }
             existingGroup.GroupName = group.GroupName;
             existingGroup.Description = group.Description;
+            context.SaveChanges();
             return Ok(existingGroup);
         }
 
@@ -58,12 +58,13 @@ namespace BetterYouApi.Controllers
         [Route("{id:int}")]
         public IHttpActionResult Delete(int id)
         {
-            var group = groups.FirstOrDefault(g => g.GroupId == id);
+            var group = context.Groups.FirstOrDefault(g => g.GroupId == id);
             if (group == null)
             {
                 return NotFound();
             }
-            groups.Remove(group);
+            context.Groups.Remove(group);
+            context.SaveChanges();
             return Ok();
         }
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using BetterYouApi.Models;
@@ -9,20 +8,20 @@ namespace BetterYouApi.Controllers
     [RoutePrefix("api/metricdata")]
     public class MetricDataController : ApiController
     {
-        private static List<MetricData> metricData = new List<MetricData>();
+        private BetterYouContext context = new BetterYouContext();
 
         [HttpGet]
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            return Ok(metricData);
+            return Ok(context.MetricDatas.ToList());
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public IHttpActionResult Get(int id)
         {
-            var data = metricData.FirstOrDefault(md => md.MetricDataId == id);
+            var data = context.MetricDatas.FirstOrDefault(md => md.MetricDataId == id);
             if (data == null)
             {
                 return NotFound();
@@ -34,9 +33,9 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult Create(MetricData data)
         {
-            data.MetricDataId = metricData.Count + 1;
             data.DataDate = DateTime.Now;
-            metricData.Add(data);
+            context.MetricDatas.Add(data);
+            context.SaveChanges();
             return Created(new Uri(Request.RequestUri + "/" + data.MetricDataId), data);
         }
 
@@ -44,13 +43,14 @@ namespace BetterYouApi.Controllers
         [Route("{id:int}")]
         public IHttpActionResult Update(int id, MetricData data)
         {
-            var existingData = metricData.FirstOrDefault(md => md.MetricDataId == id);
+            var existingData = context.MetricDatas.FirstOrDefault(md => md.MetricDataId == id);
             if (existingData == null)
             {
                 return NotFound();
             }
             existingData.UserMetricId = data.UserMetricId;
             existingData.DataValue = data.DataValue;
+            context.SaveChanges();
             return Ok(existingData);
         }
 
@@ -58,12 +58,13 @@ namespace BetterYouApi.Controllers
         [Route("{id:int}")]
         public IHttpActionResult Delete(int id)
         {
-            var data = metricData.FirstOrDefault(md => md.MetricDataId == id);
+            var data = context.MetricDatas.FirstOrDefault(md => md.MetricDataId == id);
             if (data == null)
             {
                 return NotFound();
             }
-            metricData.Remove(data);
+            context.MetricDatas.Remove(data);
+            context.SaveChanges();
             return Ok();
         }
     }
