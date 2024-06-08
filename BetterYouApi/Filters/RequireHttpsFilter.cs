@@ -35,10 +35,10 @@ namespace BetterYouApi.Filters
                 return Task.FromResult(0);
             }
 
-            if (context.Request.RequestUri.Scheme != Uri.UriSchemeHttps)
-            {
-                throw new HttpsRequiredException("HTTPS is required.");
-            }
+           // if (context.Request.RequestUri.Scheme != Uri.UriSchemeHttps)
+          //  {
+           //     throw new HttpsRequiredException("HTTPS is required.");
+          //  }
             return Task.FromResult(0);
         }
 

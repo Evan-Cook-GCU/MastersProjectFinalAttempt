@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using BetterYouApi.Models;
@@ -9,20 +8,20 @@ namespace BetterYouApi.Controllers
     [RoutePrefix("api/users")]
     public class UserController : ApiController
     {
-        private static List<User> users = new List<User>();
+        private BetterYouContext context = new BetterYouContext();
 
         [HttpGet]
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            return Ok(users);
+            return Ok(context.Users.ToList());
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public IHttpActionResult Get(int id)
         {
-            var user = users.FirstOrDefault(u => u.UserId == id);
+            var user = context.Users.FirstOrDefault(u => u.UserId == id);
             if (user == null)
             {
                 return NotFound();
@@ -34,9 +33,9 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult Create(User user)
         {
-            user.UserId = users.Count + 1;
             user.CreatedAt = DateTime.Now;
-            users.Add(user);
+            context.Users.Add(user);
+            context.SaveChanges();
             return Created(new Uri(Request.RequestUri + "/" + user.UserId), user);
         }
 
@@ -44,7 +43,7 @@ namespace BetterYouApi.Controllers
         [Route("{id:int}")]
         public IHttpActionResult Update(int id, User user)
         {
-            var existingUser = users.FirstOrDefault(u => u.UserId == id);
+            var existingUser = context.Users.FirstOrDefault(u => u.UserId == id);
             if (existingUser == null)
             {
                 return NotFound();
@@ -52,6 +51,7 @@ namespace BetterYouApi.Controllers
             existingUser.UserName = user.UserName;
             existingUser.Email = user.Email;
             existingUser.PasswordHash = user.PasswordHash;
+            context.SaveChanges();
             return Ok(existingUser);
         }
 
@@ -59,12 +59,13 @@ namespace BetterYouApi.Controllers
         [Route("{id:int}")]
         public IHttpActionResult Delete(int id)
         {
-            var user = users.FirstOrDefault(u => u.UserId == id);
+            var user = context.Users.FirstOrDefault(u => u.UserId == id);
             if (user == null)
             {
                 return NotFound();
             }
-            users.Remove(user);
+            context.Users.Remove(user);
+            context.SaveChanges();
             return Ok();
         }
     }

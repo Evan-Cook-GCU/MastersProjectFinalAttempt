@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using BetterYouApi.Models;
@@ -9,20 +8,20 @@ namespace BetterYouApi.Controllers
     [RoutePrefix("api/groupmemberships")]
     public class GroupMembershipController : ApiController
     {
-        private static List<GroupMembership> memberships = new List<GroupMembership>();
+        private BetterYouContext context = new BetterYouContext();
 
         [HttpGet]
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            return Ok(memberships);
+            return Ok(context.GroupMemberships.ToList());
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public IHttpActionResult Get(int id)
         {
-            var membership = memberships.FirstOrDefault(m => m.MembershipId == id);
+            var membership = context.GroupMemberships.FirstOrDefault(m => m.MembershipId == id);
             if (membership == null)
             {
                 return NotFound();
@@ -34,9 +33,9 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult Create(GroupMembership membership)
         {
-            membership.MembershipId = memberships.Count + 1;
             membership.JoinedAt = DateTime.Now;
-            memberships.Add(membership);
+            context.GroupMemberships.Add(membership);
+            context.SaveChanges();
             return Created(new Uri(Request.RequestUri + "/" + membership.MembershipId), membership);
         }
 
@@ -44,7 +43,7 @@ namespace BetterYouApi.Controllers
         [Route("{id:int}")]
         public IHttpActionResult Update(int id, GroupMembership membership)
         {
-            var existingMembership = memberships.FirstOrDefault(m => m.MembershipId == id);
+            var existingMembership = context.GroupMemberships.FirstOrDefault(m => m.MembershipId == id);
             if (existingMembership == null)
             {
                 return NotFound();
@@ -52,6 +51,7 @@ namespace BetterYouApi.Controllers
             existingMembership.UserId = membership.UserId;
             existingMembership.GroupId = membership.GroupId;
             existingMembership.IsAdmin = membership.IsAdmin;
+            context.SaveChanges();
             return Ok(existingMembership);
         }
 
@@ -59,12 +59,13 @@ namespace BetterYouApi.Controllers
         [Route("{id:int}")]
         public IHttpActionResult Delete(int id)
         {
-            var membership = memberships.FirstOrDefault(m => m.MembershipId == id);
+            var membership = context.GroupMemberships.FirstOrDefault(m => m.MembershipId == id);
             if (membership == null)
             {
                 return NotFound();
             }
-            memberships.Remove(membership);
+            context.GroupMemberships.Remove(membership);
+            context.SaveChanges();
             return Ok();
         }
     }
