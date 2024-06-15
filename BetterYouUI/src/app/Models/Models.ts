@@ -41,3 +41,4 @@ export interface MetricData {
     dataValue: { [key: string]: number }; // Dynamic keys for metric data
     dataDate: Date;
 }
+

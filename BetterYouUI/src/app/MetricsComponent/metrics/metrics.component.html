@@ -1,25 +1,19 @@
 <h1>Metric Data Form</h1>
 <div class="metric-form">
   <form [formGroup]="metricForm" (ngSubmit)="onSubmit()">
-    <div>
-      <label for="weight">Metric 1:</label>
-      <input id="metric1" formControlName="metric1" type="number" pInputText>
-    </div>
-    <div>
-      <label for="metric2">Metric 2:</label>
-      <input id="metric2" formControlName="metric2" type="number" pInputText>
+    <div formGroupName="metrics">
+      <div *ngFor="let label of labels; let i = index">
+        <label>{{ label }}:</label>
+        <input [id]="'metric' + (i+1)" [formControlName]="'metric' + (i+1)" type="number" pInputText>
+      </div>
     </div>
     <div>
       <label for="date">Date:</label>
       <input id="date" formControlName="date" type="date" pInputText>
     </div>
-    <div>
-      <label for="metric1Label">Metric 1 Label:</label>
-      <input id="metric1Label" formControlName="metric1Label" type="text" pInputText>
-    </div>
-    <div>
-      <label for="metric2Label">Metric 2 Label:</label>
-      <input id="metric2Label" formControlName="metric2Label" type="text" pInputText>
+    <div *ngFor="let labelCtrl of labelsFormArray.controls; let i = index">
+      <label>{{ labels[i] }} Label:</label>
+      <input [formControlName]="i" type="text" pInputText>
     </div>
     <p-button label="Add Entry" icon="pi pi-plus" (click)="addEntry()" [disabled]="metricForm.invalid"></p-button>
   </form>
@@ -27,16 +21,14 @@
   <p-table [value]="entries">
     <ng-template pTemplate="header">
       <tr>
-        <th>{{ metric1Label }}</th>
-        <th>{{ metric2Label }}</th>
+        <th *ngFor="let label of labels">{{ label }}</th>
         <th>Date</th>
         <th>Actions</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-entry let-i="rowIndex">
       <tr>
-        <td>{{ entry.dataValue.metric1 }}</td>
-        <td>{{ entry.dataValue.metric2 }}</td>
+        <td *ngFor="let label of labels">{{ entry.dataValue[label] }}</td>
         <td>{{ entry.dataDate | date: 'MM/dd/yyyy' }}</td>
         <td>
           <p-button icon="pi pi-trash" class="p-button-danger" (click)="removeEntry(i)"></p-button>

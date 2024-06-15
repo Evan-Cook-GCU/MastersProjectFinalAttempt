@@ -7,22 +7,16 @@ import { MetricData } from '../../Models/Models';
 })
 export class MetricDataService {
   private metricDataSubject = new BehaviorSubject<MetricData[]>([]);
-  private weightLabelSubject = new BehaviorSubject<string>('Weight');
-  private repsLabelSubject = new BehaviorSubject<string>('Reps');
+  private labelsSubject = new BehaviorSubject<string[]>(['Metric 1', 'Metric 2']);
 
   metricData$ = this.metricDataSubject.asObservable();
-  weightLabel$ = this.weightLabelSubject.asObservable();
-  repsLabel$ = this.repsLabelSubject.asObservable();
+  labels$ = this.labelsSubject.asObservable();
 
   updateMetricData(data: MetricData[]): void {
     this.metricDataSubject.next(data);
   }
 
-  updateMetric2Label(label: string): void {
-    this.weightLabelSubject.next(label);
-  }
-
-  updateMetric1Label(label: string): void {
-    this.repsLabelSubject.next(label);
+  updateLabels(labels: string[]): void {
+    this.labelsSubject.next(labels);
   }
 }
