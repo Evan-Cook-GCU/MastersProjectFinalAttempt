@@ -1,3 +1,5 @@
+import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
+
 export interface User {
     userId: number;
     userName: string;
@@ -41,4 +43,20 @@ export interface MetricData {
     dataValue: { [key: string]: number }; // Dynamic keys for metric data
     dataDate: Date;
 }
-
+export interface Metric {
+    Name: string;
+    fields: Field[];
+}
+export interface Field {
+    Label: string;
+    Type: string;
+}
+export interface MetricData2 {
+    Name: string;
+    fields: Data[];
+    date: Date; // Add the date property
+}
+export interface Data {
+    Label: string;
+    Value: number;
+}

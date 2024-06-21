@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { GraphComponent } from "../../GraphComponent/graph/graph.component";
-import { MetricsComponent } from '../../MetricsComponent/metrics/metrics.component';
+import { MetricsComponent } from "../../MetricsComponent/metrics/metrics.component";
 
 @Component({
     selector: 'app-layout4',
