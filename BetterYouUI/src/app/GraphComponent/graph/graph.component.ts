@@ -1,9 +1,10 @@
 import { CommonModule } from "@angular/common";
-import { Component, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ChartConfiguration, ChartType, ChartEvent, registerables, Chart } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
 import { MetricDataService } from "../../services/MetricDataService/MetricDataService";
-import { MetricData } from "../../Models/Models";
+import { Metric, MetricData, MetricData2 } from "../../Models/Models";
+import { MetricService } from "../../services/MetricService/metric.service";
 
 Chart.register(...registerables);
 
@@ -14,7 +15,7 @@ Chart.register(...registerables);
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.scss']
 })
-export class GraphComponent {
+export class GraphComponent implements OnInit {
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [],
     labels: [],
@@ -48,28 +49,38 @@ export class GraphComponent {
   public lineChartType: ChartType = 'line';
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
+  metrics: Metric[] = [];
+  selectedMetric: Metric | null = null;
+  
+  constructor(private metricService: MetricService) {}
 
-  constructor(private dataService: MetricDataService) {
-    this.dataService.metricData$.subscribe((data) => {
-      this.updateChart(data);
-    });
-    this.dataService.labels$.subscribe((labels: string[]) => {
-      this.updateLabels(labels);
+  ngOnInit(): void {
+    this.metricService.metric$.subscribe((metrics) => {
+      this.metrics = metrics;
+      if (metrics.length > 0) {
+        this.selectedMetric = metrics[0];
+        this.updateChart(this.selectedMetric);
+      }
     });
   }
-
-  private updateChart(data: MetricData[]): void {
-    this.lineChartData.labels = data.map((entry) => entry.dataDate.toDateString());
-    this.lineChartData.datasets.forEach((dataset, index) => {
-      dataset.data = data.map((entry) => entry.dataValue[this.lineChartData.datasets[index].label as string]);
-    });
-    this.chart?.update();
+  onMetricChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const metricId = selectElement.value;
+    this.selectedMetric = this.metrics.find(metric => metric.metricId.toString() === metricId) || null;
+    if (this.selectedMetric) {
+      this.updateChart(this.selectedMetric);
+    }
   }
+  private updateChart(metric: Metric): void {
+    if (!metric || !metric.data) {
+      return;
+    }
 
-  private updateLabels(labels: string[]): void {
-    this.lineChartData.datasets = labels.map((label) => ({
-      data: [],
-      label: label,
+    this.lineChartData.labels = metric.data.map(entry => new Date(entry.date).toDateString());
+
+    this.lineChartData.datasets = metric.fields.map(field => ({
+      label: field.Label,
+      data: metric.data.map(entry => entry.fields.find(f => f.Label === field.Label)?.Value || null),
       backgroundColor: 'rgba(148,159,177,0.2)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -78,8 +89,12 @@ export class GraphComponent {
       pointHoverBorderColor: 'rgba(148,159,177,0.8)',
       fill: 'origin',
     }));
+
     this.chart?.update();
   }
+
+
+  
 
   public chartClicked({ event, active }: { event?: ChartEvent; active?: object[]; }): void {
    // console.log(event, active);

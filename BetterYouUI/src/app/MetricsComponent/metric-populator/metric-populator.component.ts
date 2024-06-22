@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import { MetricService } from '../../services/MetricService/metric.service';
 
 @Component({
   selector: 'app-metric-populator',
@@ -19,12 +20,10 @@ import { TableModule } from 'primeng/table';
 export class MetricPopulatorComponent implements OnInit {
   @Input() item: Metric | null = null; // Input property to receive a Metric object
   metricForm: FormGroup; // Form group for the form
-  options: Metric[] = []; // Options for the metrics
-  selectedOption: Metric | null = null; // Selected option for the metric
   metricDataList: MetricData2[] = []; // List to store submitted MetricData2 objects
   labels: string[] = []; // List of labels for table headers
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder,private metricService: MetricService) {
     console.log(this.item);
     // Initialize the form group with Name, fields array, and date
     this.metricForm = this.formBuilder.group({
@@ -60,74 +59,38 @@ export class MetricPopulatorComponent implements OnInit {
     }));
   }
 
-  refresh() {
-    console.log(this.metricForm?.value.fields);
-  }
-
-  addField(): void {
-    // Add a new field to the form array
-    const field = this.formBuilder.group({
-      Label: ['', Validators.required],
-      Type: ['', Validators.required],
-      Value: ['', Validators.required] // Add a value control to store the field input
-    });
-    this.fieldsFormArray.push(field);
-  }
-
-  deleteField(index: number): void {
-    // Remove a field from the form array
-    this.fieldsFormArray.removeAt(index);
-  }
-
   onSubmit(): void {
-    // Handle form submission
-    const newMetric: MetricData2 = {
-      Name: this.metricForm.value.Name,
-      fields: this.metricForm.value.fields.map((field: any) => ({
-        Label: field.Label,
-        Value: field.Value
-      })),
-      date: this.metricForm.value.date
-    };
-
-    // Check if a metric data entry already exists for the same date
-    const existingIndex = this.metricDataList.findIndex(metric => metric.date === newMetric.date);
-
-    if (existingIndex !== -1) {
-      // Overwrite the existing data
-      this.metricDataList[existingIndex] = newMetric;
-    } else {
-      // Add new metric data
-      this.metricDataList.push(newMetric);
+    if (this.item) {
+      const newMetricData2: MetricData2 = {
+        metricDataId: this.metricDataList.length + 1,
+        metricId: this.item.metricId,
+        Name: this.metricForm.value.Name,
+        fields: this.metricForm.value.fields.map((field: any) => ({
+          Label: field.Label,
+          Value: field.Value
+        })),
+        date: this.metricForm.value.date
+      };
+  
+      const existingIndex = this.metricDataList.findIndex(metric => metric.date === newMetricData2.date);
+  
+      if (existingIndex !== -1) {
+        this.metricDataList[existingIndex] = newMetricData2;
+      } else {
+        this.metricDataList.push(newMetricData2);
+      }
+  
+      this.metricDataList.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      this.metricService.addMetricData(this.item.metricId, newMetricData2);
+      //this.metricService.updateMetric({ ...this.item, data: this.metricDataList });
+      console.log(this.metricDataList);
     }
-
-    // Sort by date
-    this.metricDataList.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-    console.log(this.metricDataList);
-    // Perform actions with the newMetric, including the date
   }
 
   resetForm(): void {
     // Reset the form and clear the fields
     this.metricForm.reset();
     this.fieldsFormArray.clear();
-    this.selectedOption = null;
-  }
-
-  onOptionChange(newValue: Metric): void {
-    // Handle the change of selected metric option
-    this.fieldsFormArray.clear();
-    newValue?.fields.forEach(field => {
-      this.fieldsFormArray.push(this.formBuilder.group({
-        Label: [field.Label, Validators.required],
-        Type: [field.Type, Validators.required],
-        Value: ['', Validators.required] // Add a value control to store the field input
-      }));
-    });
-    this.labels = newValue?.fields.map(field => field.Label) || [];
-    this.selectedOption = newValue;
-    this.metricForm.patchValue(newValue);
   }
 
   getFieldType(type: string): string {
@@ -141,6 +104,9 @@ export class MetricPopulatorComponent implements OnInit {
   }
 
   removeEntry(index: number): void {
-    this.metricDataList.splice(index, 1);
+    const removedMetric = this.metricDataList.splice(index, 1)[0];
+    if (removedMetric) {
+      this.metricService.removeMetricData(this.item?.metricId!, removedMetric.metricDataId);
+    }
   }
 }

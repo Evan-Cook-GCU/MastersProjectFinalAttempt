@@ -17,10 +17,17 @@ import { TableModule } from 'primeng/table';
     imports: [MetricPopulatorComponent, CommonModule, ReactiveFormsModule, TableModule, ButtonModule, InputTextModule, CalendarModule, FormsModule]
 })
 export class MetricListerComponent {
-  options: Metric[] = [];
+  metrics: Metric[] = [];
 
   constructor(private formBuilder: FormBuilder, private metricService: MetricService) {
-    this.options = this.metricService.getMetrics();
+    this.metrics = this.metricService.getMetrics();
+    this.metricService.metric$.subscribe(metrics => {
+      this.metrics = metrics;
+    });
+  }
+  getList() {
+    console.log(this.metrics);
+   // return this.metrics;
   }
   
 }

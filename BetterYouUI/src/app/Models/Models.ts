@@ -23,12 +23,7 @@ export interface GroupMembership {
     joinedAt: Date;
 }
 
-export interface Metric {
-    metricId: number;
-    metricName: string;
-    metricType: string;
-    description: string;
-}
+
 
 export interface UserMetric {
     userMetricId: number;
@@ -44,14 +39,19 @@ export interface MetricData {
     dataDate: Date;
 }
 export interface Metric {
+    metricId: number;
     Name: string;
     fields: Field[];
+    data: MetricData2[];
 }
+
 export interface Field {
     Label: string;
     Type: string;
 }
 export interface MetricData2 {
+    metricDataId: number;
+    metricId: number;
     Name: string;
     fields: Data[];
     date: Date; // Add the date property
