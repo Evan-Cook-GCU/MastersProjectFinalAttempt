@@ -1,0 +1,19 @@
+<p>Value: {{metricForm.value | json}}</p>
+
+<div *ngIf="options.length!=0">
+  <select id="options" [ngModel]="selectedOption" (ngModelChange)="onOptionChange($event)">
+    <option *ngFor="let option of options" [ngValue]="option">{{ option.Name }}</option>
+  </select>
+</div>
+<form [formGroup]="metricForm" (ngSubmit)="onSubmit()">
+  <input formControlName="Name">
+  <div formArrayName="fields">
+    <div *ngFor="let field of fieldsFormArray.controls; let i=index" [formGroupName]="i">
+      <input formControlName="Label">
+      <input formControlName="Type">
+      <button type="button" (click)="deleteField(i)">Delete</button>
+    </div>
+  </div>
+  <button type="submit">Submit</button>
+</form>
+<button type="button" (click)="addField()">Add Field</button>

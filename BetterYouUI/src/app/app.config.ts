@@ -9,6 +9,7 @@ import { DecimalPipe } from '@angular/common';
 import { CustomerService } from './primeng-table-complete/customer.service';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 
 export const appConfig: ApplicationConfig = {
@@ -19,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(),
     { provide: ErrorHandler, useClass: GlobalErrorHandlerService },
-    provideRouter(routes)
+    provideRouter(routes), provideAnimationsAsync()
   ]
 };

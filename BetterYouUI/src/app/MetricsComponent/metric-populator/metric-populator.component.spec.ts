@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MetricsComponent } from './metrics.component';
+import { MetricPopulatorComponent } from './metric-populator.component';
 
-describe('MetricsComponent', () => {
-  let component: MetricsComponent;
-  let fixture: ComponentFixture<MetricsComponent>;
+describe('MetricPopulatorComponent', () => {
+  let component: MetricPopulatorComponent;
+  let fixture: ComponentFixture<MetricPopulatorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetricsComponent]
+      imports: [MetricPopulatorComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(MetricsComponent);
+    fixture = TestBed.createComponent(MetricPopulatorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
