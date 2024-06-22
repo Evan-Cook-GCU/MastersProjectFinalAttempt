@@ -50,7 +50,8 @@ export class GraphComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   metrics: Metric[] = [];
-  selectedMetric: Metric | null = null;
+  selectedXMetric: Metric | null = null;
+  selectedYMetric: Metric | null = null;
   xField: string | null = null;
   yField: string | null = null;
 
@@ -60,42 +61,62 @@ export class GraphComponent implements OnInit {
     this.metricService.metric$.subscribe((metrics) => {
       this.metrics = metrics;
       if (metrics.length > 0) {
-        this.selectedMetric = metrics[0];
+        this.selectedXMetric = metrics[0];
+        this.selectedYMetric = metrics[0];
         this.updateChart();
       }
     });
+    
   }
-  onMetricChange(event: Event): void {
+  onMetricFieldChange(event: Event, type: 'xMetric' | 'xField' | 'yMetric' | 'yField'): void {
     const selectElement = event.target as HTMLSelectElement;
-    const metricId = selectElement.value;
-    this.selectedMetric = this.metrics.find(metric => metric.metricId.toString() === metricId) || null;
-    this.updateChart();
-  }
-
-  onFieldChange(event: Event, axis: 'x' | 'y'): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const fieldLabel = selectElement.value;
-    if (axis === 'x') {
-      this.xField = fieldLabel;
-    } else {
-      this.yField = fieldLabel;
+    const value = selectElement.value;
+    if(!this.yField)
+      {
+        this.yField = this.metrics[0].fields[0].Label;
+      }
+      if(!this.xField)
+      {
+        this.xField = this.metrics[0].fields[0].Label;
+      }
+      if(!this.selectedXMetric)
+      {
+        this.selectedXMetric = this.metrics[0];
+      }
+      if(!this.selectedYMetric)
+      {
+        this.selectedYMetric = this.metrics[0];
+      }
+    switch (type) {
+      case 'xMetric':
+        this.selectedXMetric = this.metrics.find(metric => metric.metricId.toString() === value) || null;
+        break;
+      case 'xField':
+        this.xField = value;
+        break;
+      case 'yMetric':
+        this.selectedYMetric = this.metrics.find(metric => metric.metricId.toString() === value) || null;
+        break;
+      case 'yField':
+        this.yField = value;
+        break;
     }
     this.updateChart();
   }
 
   private updateChart(): void {
-    if (!this.selectedMetric || !this.selectedMetric.data || !this.xField || !this.yField) {
+    if (!this.selectedXMetric || !this.selectedXMetric.data || !this.selectedYMetric || !this.selectedYMetric.data || !this.xField || !this.yField) {
       return;
     }
 
     let xData: any[] = [];
     if (this.xField === 'date') {
-      xData = this.selectedMetric.data.map(entry => new Date(entry.date).toDateString());
+      xData = this.selectedXMetric.data.map(entry => new Date(entry.date).toDateString());
     } else {
-      xData = this.selectedMetric.data.map(entry => entry.fields.find(f => f.Label === this.xField)?.Value || null);
+      xData = this.selectedXMetric.data.map(entry => entry.fields.find(f => f.Label === this.xField)?.Value || null);
     }
 
-    const yData = this.selectedMetric.data.map(entry => entry.fields.find(f => f.Label === this.yField)?.Value || null);
+    const yData = this.selectedYMetric.data.map(entry => entry.fields.find(f => f.Label === this.yField)?.Value || null);
     const labels = xData;
 
     this.lineChartData.labels = labels;
@@ -115,8 +136,6 @@ export class GraphComponent implements OnInit {
 
     this.chart?.update();
   }
-
-
   
 
   public chartClicked({ event, active }: { event?: ChartEvent; active?: object[]; }): void {

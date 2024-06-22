@@ -45,6 +45,16 @@ export class MetricService {
       this.metricSubject.next(this.metrics);
     }
   }
+  updateMetricDataList(metricId: number, metricData: MetricData2[]): void {
+    const metric = this.metrics.find(m => m.metricId === metricId);
+    if (metric) {
+      if (!metric.data) {
+        metric.data = []; // Initialize data if undefined
+      }
+      metric.data = metricData;
+      this.metricSubject.next(this.metrics);
+    }
+  }
 
   removeMetricData(metricId: number, metricDataId: number): void {
     const metric = this.metrics.find(m => m.metricId === metricId);
