@@ -1,6 +1,8 @@
 <p>metric-lister works!</p>
-<div *ngFor="let item of options">
+<button (click)="getList()">getList</button>
+<div *ngFor="let item of metrics">
     <div>Hello</div>
     
     <app-metric-populator [item]="item"></app-metric-populator>
   </div>
+  
