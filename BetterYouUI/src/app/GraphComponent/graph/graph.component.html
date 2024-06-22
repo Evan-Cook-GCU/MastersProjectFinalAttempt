@@ -30,11 +30,9 @@
 
 <table>
   <tr>
-    <th *ngFor="let label of lineChartData.labels">{{ label }}</th>
+    <th *ngFor="let label of tableData">{{ label.label }}</th>
   </tr>
-  <tr *ngFor="let dataset of lineChartData.datasets; let i = index">
-    <td *ngFor="let label of lineChartData.labels; let j = index">
-      {{ dataset.data[j] }}
-    </td>
+  <tr>
+    <td *ngFor="let data of tableData">{{ data.value }}</td>
   </tr>
 </table>
