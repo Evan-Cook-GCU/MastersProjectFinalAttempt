@@ -42,10 +42,12 @@ export class MetricPopulatorComponent implements OnInit {
     this.metricForm = this.formBuilder.group({
       Name: [this.item?.Name, Validators.required],
       fields: this.formBuilder.array(this.createFieldsArray(fields)),
-      date: [new Date(), Validators.required] // Initialize the date form control
+      date: [this.getCurrentDate(), Validators.required] // Initialize the date form control
     });
   }
-
+  private getCurrentDate(): string {
+    return new Date().toISOString().split('T')[0]; // Get current date without time
+  }
   get fieldsFormArray(): FormArray {
     return this.metricForm.get('fields') as FormArray;
   }
@@ -81,7 +83,7 @@ export class MetricPopulatorComponent implements OnInit {
       }
   
       this.metricDataList.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      this.metricService.addMetricData(this.item.metricId, newMetricData2);
+      this.metricService.updateMetricDataList(this.item.metricId, this.metricDataList);
       //this.metricService.updateMetric({ ...this.item, data: this.metricDataList });
       console.log(this.metricDataList);
     }
@@ -91,6 +93,7 @@ export class MetricPopulatorComponent implements OnInit {
     // Reset the form and clear the fields
     this.metricForm.reset();
     this.fieldsFormArray.clear();
+    this.metricForm.patchValue({ date: this.getCurrentDate() });
   }
 
   getFieldType(type: string): string {

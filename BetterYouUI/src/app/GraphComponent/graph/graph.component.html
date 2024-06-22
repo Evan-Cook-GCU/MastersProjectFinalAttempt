@@ -1,5 +1,22 @@
-<select (change)="onMetricChange($event)">
+<label for="xMetric">X Metric:</label>
+<select id="xMetric" (change)="onMetricFieldChange($event, 'xMetric')">
   <option *ngFor="let metric of metrics" [value]="metric.metricId">{{ metric.Name }}</option>
+</select>
+
+<label for="xField">X Field:</label>
+<select id="xField" (change)="onMetricFieldChange($event, 'xField')">
+  <option value="date">Date</option>
+  <option *ngFor="let field of selectedXMetric?.fields" [value]="field.Label">{{ field.Label }}</option>
+</select>
+
+<label for="yMetric">Y Metric:</label>
+<select id="yMetric" (change)="onMetricFieldChange($event, 'yMetric')">
+  <option *ngFor="let metric of metrics" [value]="metric.metricId">{{ metric.Name }}</option>
+</select>
+
+<label for="yField">Y Field:</label>
+<select id="yField" (change)="onMetricFieldChange($event, 'yField')">
+  <option *ngFor="let field of selectedYMetric?.fields" [value]="field.Label">{{ field.Label }}</option>
 </select>
 
 <canvas
@@ -10,13 +27,12 @@
   (chartHover)="chartHovered($event)"
   (chartClick)="chartClicked($event)"
 ></canvas>
+
 <table>
   <tr>
-    <th *ngFor="let label of lineChartData.labels">{{ label }}</th>
+    <th *ngFor="let label of tableData">{{ label.label }}</th>
   </tr>
-  <tr *ngFor="let dataset of lineChartData.datasets; let i = index">
-    <td *ngFor="let label of lineChartData.labels; let j = index">
-      {{ dataset.data[j] }}
-    </td>
+  <tr>
+    <td *ngFor="let data of tableData">{{ data.value }}</td>
   </tr>
 </table>
