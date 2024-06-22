@@ -1,0 +1,10 @@
+<div *ngFor="let metric of metrics">
+    <h3>{{ metric.Name }}</h3>
+    <ul>
+      <li *ngFor="let field of metric.fields">
+        {{ field.Label }} ({{ field.Type || 'text' }})
+      </li>
+      <li>Date</li>
+    </ul>
+  </div>
+  

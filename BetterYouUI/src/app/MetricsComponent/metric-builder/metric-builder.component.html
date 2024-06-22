@@ -10,10 +10,13 @@
   <div formArrayName="fields">
     <div *ngFor="let field of fieldsFormArray.controls; let i=index" [formGroupName]="i">
       <input formControlName="Label">
-      <input formControlName="Type">
+        <select formControlName="Type">
+          <option *ngFor="let type of validFieldTypes" [value]="type">{{ type }}</option>
+        </select>
       <button type="button" (click)="deleteField(i)">Delete</button>
     </div>
   </div>
   <button type="submit">Submit</button>
 </form>
+
 <button type="button" (click)="addField()">Add Field</button>

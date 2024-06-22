@@ -60,3 +60,4 @@ export interface Data {
     Label: string;
     Value: number;
 }
+export const VALID_FIELD_TYPES: string[] = ['text', 'number', 'date', 'email', 'url', 'password', 'tel'];

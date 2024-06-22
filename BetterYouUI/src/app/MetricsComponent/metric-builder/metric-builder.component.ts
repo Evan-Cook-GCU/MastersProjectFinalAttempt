@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
-import { Metric } from '../../Models/Models';
+import { Metric, VALID_FIELD_TYPES } from '../../Models/Models';
 import { MetricService } from '../../services/MetricService/metric.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class MetricBuilderComponent implements OnInit {
   metricForm: FormGroup;
   options: Metric[] = [];
   selectedOption: Metric | null = null;
-
+  validFieldTypes: string[] = VALID_FIELD_TYPES;
   constructor(private formBuilder: FormBuilder, private metricService: MetricService) {
     this.metricForm = this.formBuilder.group({
       Name: ['', Validators.required],
@@ -53,6 +53,7 @@ export class MetricBuilderComponent implements OnInit {
   onSubmit(): void {
     const newMetric: Metric = this.metricForm.value;
     if (this.selectedOption) {
+      newMetric.metricId = this.selectedOption.metricId;
       this.metricService.updateMetric(newMetric);
     } else {
       this.metricService.addMetric(newMetric);
