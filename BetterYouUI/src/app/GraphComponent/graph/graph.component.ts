@@ -82,10 +82,10 @@ export class GraphComponent {
   }
 
   public chartClicked({ event, active }: { event?: ChartEvent; active?: object[]; }): void {
-    console.log(event, active);
+   // console.log(event, active);
   }
 
   public chartHovered({ event, active }: { event?: ChartEvent; active?: object[]; }): void {
-    console.log(event, active);
+   // console.log(event, active);
   }
 }
