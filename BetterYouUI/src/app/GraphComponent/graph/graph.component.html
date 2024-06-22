@@ -2,6 +2,17 @@
   <option *ngFor="let metric of metrics" [value]="metric.metricId">{{ metric.Name }}</option>
 </select>
 
+<label for="xField">X Field:</label>
+<select id="xField" (change)="onFieldChange($event, 'x')">
+  <option value="date">Date</option>
+  <option *ngFor="let field of selectedMetric?.fields" [value]="field.Label">{{ field.Label }}</option>
+</select>
+
+<label for="yField">Y Field:</label>
+<select id="yField" (change)="onFieldChange($event, 'y')">
+  <option *ngFor="let field of selectedMetric?.fields" [value]="field.Label">{{ field.Label }}</option>
+</select>
+
 <canvas
   baseChart
   [data]="lineChartData"
@@ -10,6 +21,7 @@
   (chartHover)="chartHovered($event)"
   (chartClick)="chartClicked($event)"
 ></canvas>
+
 <table>
   <tr>
     <th *ngFor="let label of lineChartData.labels">{{ label }}</th>
