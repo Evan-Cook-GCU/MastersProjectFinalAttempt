@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Field, Metric, MetricData2 } from '../../Models/Models'; // Importing from the Models file
+import { Field, Metric, MetricData2, VALID_FIELD_TYPES } from '../../Models/Models'; // Importing from the Models file
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -94,9 +94,9 @@ export class MetricPopulatorComponent implements OnInit {
   }
 
   getFieldType(type: string): string {
-    const validTypes = ['text', 'number', 'date', 'email', 'url', 'password', 'tel'];
-    return validTypes.includes(type) ? type : 'text';
+    return VALID_FIELD_TYPES.includes(type) ? type : 'text';
   }
+  
 
   getFieldValue(entry: MetricData2, label: string): any {
     const field = entry.fields.find(field => field.Label === label);
