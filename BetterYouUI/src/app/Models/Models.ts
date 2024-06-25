@@ -23,33 +23,26 @@ export interface GroupMembership {
     joinedAt: Date;
 }
 
-
-
 export interface UserMetric {
     userMetricId: number;
     userId: number;
     metricId: number;
+    metricDataId: number;
     createdAt: Date;
 }
 
-export interface MetricData {
-    metricDataId: number;
-    userMetricId: number;
-    dataValue: { [key: string]: number }; // Dynamic keys for metric data
-    dataDate: Date;
-}
 export interface Metric {
     metricId: number;
     Name: string;
     fields: Field[];
-    data: MetricData2[];
+    data: MetricData[];
 }
 
 export interface Field {
     Label: string;
     Type: string;
 }
-export interface MetricData2 {
+export interface MetricData {
     metricDataId: number;
     metricId: number;
     Name: string;

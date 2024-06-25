@@ -6,6 +6,22 @@ export const layoutRoutes: Routes = [
     loadComponent: () => import('./layout1/layout1.component').then(c => c.Layout1Component)
   },
   {
+    path: 'Admin-Group-Editor',
+    loadComponent: () => import('./admin-group-editor/admin-group-editor.component').then(c => c.AdminGroupEditorComponent)
+  },
+  {
+    path: 'user-group-view',
+    loadComponent: () => import('./user-group-view/user-group-view.component').then(c => c.UserGroupViewComponent)
+  },
+  {
+    path: 'user-home-page',
+    loadComponent: () => import('./user-home-page/user-home-page.component').then(c => c.UserHomePageComponent)
+  },
+  {
+    path: 'Admin-Group-Editor',
+    loadComponent: () => import('./group-search/group-search.component').then(c => c.GroupSearchComponent)
+  },
+  {
     path: 'layout-2',
     loadComponent: () => import('./layout2/layout2.component').then(c => c.Layout2Component)
   },

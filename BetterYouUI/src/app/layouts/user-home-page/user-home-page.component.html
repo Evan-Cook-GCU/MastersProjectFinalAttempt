@@ -1,0 +1,61 @@
+<div *ngIf="!loggedInUser">
+  <h2>Login</h2>
+  <form (ngSubmit)="login()">
+    <label for="username">Username:</label>
+    <input type="text" id="username" [(ngModel)]="loginForm.username" name="username" required>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" [(ngModel)]="loginForm.password" name="password" required>
+    
+    <button type="submit">Login</button>
+  </form>
+</div>
+
+<div *ngIf="loggedInUser">
+  <h2>Welcome, {{ loggedInUser.userName }}</h2>
+  <form (ngSubmit)="updateUserDetails()">
+    <label for="username">Username:</label>
+    <input type="text" id="username" [(ngModel)]="loggedInUser.userName" name="username" required>
+    
+    <label for="email">Email:</label>
+    <input type="email" id="email" [(ngModel)]="loggedInUser.email" name="email" required>
+    
+    <button type="submit">Update</button>
+  </form>
+
+  <h3>Your Groups</h3>
+  <button (click)="showGroupDialog()">Create New Group</button>
+  <p-table [value]="userGroups">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Group Name</th>
+        <th>Description</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-group>
+      <tr>
+        <td>{{ group.groupName }}</td>
+        <td>{{ group.description }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog header="Create New Group" [(visible)]="displayGroupDialog" [modal]="true" [closable]="false">
+  <div class="p-fluid">
+    <div class="p-field">
+      <label for="groupName">Group Name</label>
+      <input id="groupName" type="text" [(ngModel)]="newGroup.groupName" pInputText>
+    </div>
+    <div class="p-field">
+      <label for="description">Description</label>
+      <input id="description" type="text" [(ngModel)]="newGroup.description" pInputText>
+    </div>
+  </div>
+  
+    
+  <p-footer>
+    <button type="button" pButton label="Cancel" (click)="displayGroupDialog=false">cancel</button>
+    <button type="button" pButton label="Save" (click)="saveGroup()">save</button>
+</p-footer>
+</p-dialog>

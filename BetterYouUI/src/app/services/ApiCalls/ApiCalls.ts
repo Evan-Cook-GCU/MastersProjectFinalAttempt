@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User, Group, GroupMembership, Metric, UserMetric, MetricData } from '../../Models/Models';
+import { User, Group, GroupMembership, Metric, UserMetric } from '../../Models/Models';
 
 @Injectable({
   providedIn: 'root'
@@ -148,31 +148,4 @@ export class UserMetricService {
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-export class MetricDataService {
-  private baseUrl = 'http://localhost:44060/api/metricdata';
 
-  constructor(private http: HttpClient) {}
-
-  getAll(): Observable<MetricData[]> {
-    return this.http.get<MetricData[]>(this.baseUrl);
-  }
-
-  get(id: number): Observable<MetricData> {
-    return this.http.get<MetricData>(`${this.baseUrl}/${id}`);
-  }
-
-  create(data: MetricData): Observable<MetricData> {
-    return this.http.post<MetricData>(this.baseUrl, data);
-  }
-
-  update(id: number, data: MetricData): Observable<MetricData> {
-    return this.http.put<MetricData>(`${this.baseUrl}/${id}`, data);
-  }
-
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
-  }
-}

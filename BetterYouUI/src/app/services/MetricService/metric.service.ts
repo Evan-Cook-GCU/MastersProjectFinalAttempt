@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Metric, MetricData2 } from '../../Models/Models';
+import { Metric, MetricData } from '../../Models/Models';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +35,7 @@ export class MetricService {
       this.metricSubject.next(this.metrics);
     }
   }
-  addMetricData(metricId: number, metricData: MetricData2): void {
+  addMetricData(metricId: number, metricData: MetricData): void {
     const metric = this.metrics.find(m => m.metricId === metricId);
     if (metric) {
       if (!metric.data) {
@@ -45,7 +45,7 @@ export class MetricService {
       this.metricSubject.next(this.metrics);
     }
   }
-  updateMetricDataList(metricId: number, metricData: MetricData2[]): void {
+  updateMetricDataList(metricId: number, metricData: MetricData[]): void {
     const metric = this.metrics.find(m => m.metricId === metricId);
     if (metric) {
       if (!metric.data) {

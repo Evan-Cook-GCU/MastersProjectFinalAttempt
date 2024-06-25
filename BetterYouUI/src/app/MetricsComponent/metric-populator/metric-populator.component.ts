@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Field, Metric, MetricData2, VALID_FIELD_TYPES } from '../../Models/Models'; // Importing from the Models file
+import { Field, Metric, MetricData, VALID_FIELD_TYPES } from '../../Models/Models'; // Importing from the Models file
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -20,7 +20,7 @@ import { MetricService } from '../../services/MetricService/metric.service';
 export class MetricPopulatorComponent implements OnInit {
   @Input() item: Metric | null = null; // Input property to receive a Metric object
   metricForm: FormGroup; // Form group for the form
-  metricDataList: MetricData2[] = []; // List to store submitted MetricData2 objects
+  metricDataList: MetricData[] = []; // List to store submitted MetricData2 objects
   labels: string[] = []; // List of labels for table headers
 
   constructor(private formBuilder: FormBuilder,private metricService: MetricService) {
@@ -63,7 +63,7 @@ export class MetricPopulatorComponent implements OnInit {
 
   onSubmit(): void {
     if (this.item) {
-      const newMetricData2: MetricData2 = {
+      const newMetricData2: MetricData = {
         metricDataId: this.metricDataList.length + 1,
         metricId: this.item.metricId,
         Name: this.metricForm.value.Name,
@@ -101,7 +101,7 @@ export class MetricPopulatorComponent implements OnInit {
   }
   
 
-  getFieldValue(entry: MetricData2, label: string): any {
+  getFieldValue(entry: MetricData, label: string): any {
     const field = entry.fields.find(field => field.Label === label);
     return field ? field.Value : '';
   }
