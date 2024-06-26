@@ -33,7 +33,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-group>
-      <tr>
+      <tr (click)="openGroupEditor(group.groupId)">
         <td>{{ group.groupName }}</td>
         <td>{{ group.description }}</td>
       </tr>
@@ -53,9 +53,8 @@
     </div>
   </div>
   
-    
   <p-footer>
     <button type="button" pButton label="Cancel" (click)="displayGroupDialog=false">cancel</button>
     <button type="button" pButton label="Save" (click)="saveGroup()">save</button>
-</p-footer>
+  </p-footer>
 </p-dialog>

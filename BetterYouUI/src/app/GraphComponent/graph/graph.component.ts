@@ -2,9 +2,8 @@ import { CommonModule } from "@angular/common";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ChartConfiguration, ChartType, ChartEvent, registerables, Chart } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
-import { MetricDataService } from "../../services/MetricDataService/MetricDataService";
 import { Metric, MetricData } from "../../Models/Models";
-import { MetricService } from "../../services/MetricService/metric.service";
+import { MetricService } from "../../services/DataServices/MetricService/metric.service";
 
 Chart.register(...registerables);
 

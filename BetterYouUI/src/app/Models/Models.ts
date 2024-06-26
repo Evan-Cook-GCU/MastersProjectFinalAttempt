@@ -13,6 +13,7 @@ export interface Group {
     groupName: string;
     description: string;
     createdAt: Date;
+    metrics: Metric[]; // Added relationship
 }
 
 export interface GroupMembership {
@@ -21,21 +22,23 @@ export interface GroupMembership {
     groupId: number;
     isAdmin: boolean;
     joinedAt: Date;
+    metricData: MetricData[]; // Added relationship
 }
 
-export interface UserMetric {
-    userMetricId: number;
-    userId: number;
-    metricId: number;
-    metricDataId: number;
-    createdAt: Date;
-}
+// export interface UserMetric {
+//     userMetricId: number;
+//     userId: number;
+//     metricId: number;
+//     metricDataId: number;
+//     createdAt: Date;
+// }
 
 export interface Metric {
     metricId: number;
     Name: string;
     fields: Field[];
     data: MetricData[];
+    groupId: number; // Added foreign key relationship
 }
 
 export interface Field {
@@ -48,6 +51,7 @@ export interface MetricData {
     Name: string;
     fields: Data[];
     date: Date; // Add the date property
+    groupMembershipId: number; // Added foreign key relationship
 }
 export interface Data {
     Label: string;

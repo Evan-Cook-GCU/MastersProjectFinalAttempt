@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Group, User } from '../../Models/Models';
 import { StorageService } from '../../services/storage/storage.service';
-import { UserService } from '../../services/UserMock/user.service';
+import { UserService } from '../../services/DataServices/UserMock/user.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-user-home-page',
   standalone: true,
@@ -18,9 +20,10 @@ export class UserHomePageComponent implements  OnInit{
   userGroups: Group[] = [];
   loginForm = { username: '', password: '' };
   displayGroupDialog: boolean = false;
-  newGroup: Group = { groupId: 0, groupName: '', description: '', createdAt: new Date() };
+  newGroup: Group = { groupId: 0, groupName: '', description: '', createdAt: new Date(), metrics: [] };
 
-  constructor(private storageService: StorageService, private userService: UserService) {}
+  constructor(private storageService: StorageService, private userService: UserService, private router: Router) {}
+
 
   ngOnInit() {
     const userId = this.storageService.getStorage('loggedInUserId');
@@ -34,10 +37,10 @@ export class UserHomePageComponent implements  OnInit{
 
   login() {
     const user = this.userService.getUsers().find(u => u.userName === this.loginForm.username);
-    var x = this.hashPassword(this.loginForm.password);
     if (user && user.passwordHash === this.hashPassword(this.loginForm.password)) {
       this.loggedInUser = user;
       this.storageService.setStorage('loggedInUserId', user.userId.toString());
+      this.userGroups = this.userService.getGroupsByUserId(user.userId);
     } else {
       alert('Invalid username or password');
     }
@@ -46,7 +49,6 @@ export class UserHomePageComponent implements  OnInit{
   updateUserDetails() {
     if (this.loggedInUser) {
       this.userService.updateUser(this.loggedInUser);
-      var check = this.userService.getUsers();
       alert('User details updated');
     }
   }
@@ -66,8 +68,12 @@ export class UserHomePageComponent implements  OnInit{
       this.newGroup.createdAt = new Date();
       this.userService.addGroup(this.newGroup, this.loggedInUser.userId);
       this.userGroups = this.userService.getGroupsByUserId(this.loggedInUser.userId);
-      this.newGroup = { groupId: 0, groupName: '', description: '', createdAt: new Date() };
+      this.newGroup = { groupId: 0, groupName: '', description: '', createdAt: new Date(), metrics: [] };
       this.displayGroupDialog = false;
     }
   }
+  openGroupEditor(groupId: number) {
+    this.router.navigate(['/admin-group-editor', groupId]);
+  }
+  
 }

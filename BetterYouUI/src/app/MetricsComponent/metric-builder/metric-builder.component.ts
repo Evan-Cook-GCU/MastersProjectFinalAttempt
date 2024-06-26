@@ -6,7 +6,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { Metric, VALID_FIELD_TYPES } from '../../Models/Models';
-import { MetricService } from '../../services/MetricService/metric.service';
+import { MetricService } from '../../services/DataServices/MetricService/metric.service';
 
 @Component({
   selector: 'app-metric-builder',

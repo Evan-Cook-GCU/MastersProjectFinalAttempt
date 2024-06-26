@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Group, GroupMembership, User } from '../../Models/Models';
+import { User, Group, GroupMembership } from '../../../Models/Models';
+import { GroupMembershipService } from '../GroupMembershipMock/group-membership.service';
+import { GroupService } from '../GroupMock/group.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,13 +32,20 @@ export class UserService {
   ];
   private groups: Group[] = [ /*... define your groups ...*/ ];
   private groupMemberships: GroupMembership[] = [ /*... define your memberships ...*/ ];
-  constructor() { }
+  constructor(
+    private groupService: GroupService,
+    private groupMembershipService: GroupMembershipService
+  ) {}
   
   getGroupsByUserId(userId: number): Group[] {
-    const membershipIds = this.groupMemberships
+    const membershipIds = this.groupMembershipService
+      .getGroupMemberships()
       .filter(membership => membership.userId === userId)
       .map(membership => membership.groupId);
-    return this.groups.filter(group => membershipIds.includes(group.groupId));
+
+    return this.groupService
+      .getGroups()
+      .filter(group => membershipIds.includes(group.groupId));
   }
 
   addGroup(group: Group, userId: number): void {
@@ -46,7 +55,8 @@ export class UserService {
       userId: userId,
       groupId: group.groupId,
       isAdmin: true,
-      joinedAt: new Date()
+      joinedAt: new Date(),
+      metricData: []
     };
     this.groupMemberships.push(newMembership);
   }

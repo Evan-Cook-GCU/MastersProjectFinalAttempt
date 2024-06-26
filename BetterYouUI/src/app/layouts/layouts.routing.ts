@@ -6,7 +6,7 @@ export const layoutRoutes: Routes = [
     loadComponent: () => import('./layout1/layout1.component').then(c => c.Layout1Component)
   },
   {
-    path: 'Admin-Group-Editor',
+    path: 'admin-group-editor/:groupId',
     loadComponent: () => import('./admin-group-editor/admin-group-editor.component').then(c => c.AdminGroupEditorComponent)
   },
   {
@@ -18,7 +18,7 @@ export const layoutRoutes: Routes = [
     loadComponent: () => import('./user-home-page/user-home-page.component').then(c => c.UserHomePageComponent)
   },
   {
-    path: 'Admin-Group-Editor',
+    path: 'group-search',
     loadComponent: () => import('./group-search/group-search.component').then(c => c.GroupSearchComponent)
   },
   {
@@ -37,5 +37,5 @@ export const layoutRoutes: Routes = [
     path: 'reactive-form',
     loadComponent: () => import('../reactive-form/reactive-form.component').then(c => c.ReactiveFormComponent)
   }
-]
+];
 

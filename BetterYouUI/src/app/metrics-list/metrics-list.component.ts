@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Metric, VALID_FIELD_TYPES } from '../Models/Models';
-import { MetricService } from '../services/MetricService/metric.service';
+import { MetricService } from '../services/DataServices/MetricService/metric.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
