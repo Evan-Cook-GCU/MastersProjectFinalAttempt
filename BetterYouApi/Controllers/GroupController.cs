@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Web.Http;
 using BetterYouApi.Models;
 
@@ -14,6 +15,7 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult GetAll()
         {
+            var x=context.Groups.ToList();
             return Ok(context.Groups.ToList());
         }
 
@@ -21,12 +23,49 @@ namespace BetterYouApi.Controllers
         [Route("{id:int}")]
         public IHttpActionResult Get(int id)
         {
-            var group = context.Groups.FirstOrDefault(g => g.GroupId == id);
+            var group = context.Groups
+                .Include("Metrics.Fields")
+                .Include("Metrics.Data.Fields")
+                .FirstOrDefault(g => g.GroupId == id);
             if (group == null)
             {
                 return NotFound();
             }
-            return Ok(group);
+
+            var groupDTO = new GroupDTO
+            {
+                GroupId = group.GroupId,
+                GroupName = group.GroupName,
+                Description = group.Description,
+                CreatedAt = group.CreatedAt,
+                Metrics = group.Metrics.Select(m => new MetricDTO
+                {
+                    MetricId = m.MetricId,
+                    Name = m.Name,
+                    Fields = m.Fields.Select(f => new FieldDTO
+                    {
+                        FieldId = f.FieldId,
+                        Label = f.Label,
+                        Type = f.Type
+                    }).ToList(),
+                    Data = m.Data.Select(d => new MetricDataDTO
+                    {
+                        MetricDataId = d.MetricDataId,
+                        MetricId = d.MetricId,
+                        Name = d.Name,
+                        Date = d.Date,
+                        GroupMembershipId = d.GroupMembershipId,
+                        Fields = d.Fields.Select(df => new DataDTO
+                        {
+                            DataId = df.DataId,
+                            Label = df.Label,
+                            Value = df.Value
+                        }).ToList()
+                    }).ToList()
+                }).ToList()
+            };
+
+            return Ok(groupDTO);
         }
 
         [HttpPost]

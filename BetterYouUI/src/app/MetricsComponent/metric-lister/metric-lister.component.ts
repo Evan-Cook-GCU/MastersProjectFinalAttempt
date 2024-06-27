@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Metric } from '../../Models/Models';
 import { MetricService } from '../../services/DataServices/MetricService/metric.service';
@@ -17,8 +17,8 @@ import { TableModule } from 'primeng/table';
     imports: [MetricPopulatorComponent, CommonModule, ReactiveFormsModule, TableModule, ButtonModule, InputTextModule, CalendarModule, FormsModule]
 })
 export class MetricListerComponent {
-  metrics: Metric[] = [];
-
+  @Input() metrics: Metric[] = [];
+  @Input() userMetricData: Metric[] = [];
   constructor(private formBuilder: FormBuilder, private metricService: MetricService) {
     this.metrics = this.metricService.getMetrics();
     this.metricService.metric$.subscribe(metrics => {

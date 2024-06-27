@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Metric, VALID_FIELD_TYPES } from '../Models/Models';
+import { Component, Input, OnInit } from '@angular/core';
+import { Group, Metric, VALID_FIELD_TYPES } from '../Models/Models';
 import { MetricService } from '../services/DataServices/MetricService/metric.service';
 import { CommonModule } from '@angular/common';
 
@@ -11,8 +11,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './metrics-list.component.scss'
 })
 export class MetricsListComponent implements OnInit {
-  metrics: Metric[] = [];
-
+  @Input() group: Group | null = null;
+  @Input() metrics: Metric[] = [];
   constructor(private metricService: MetricService) { }
 
   ngOnInit(): void {

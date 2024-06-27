@@ -1,28 +1,12 @@
 import { Injectable } from '@angular/core';
 import { GroupMembership } from '../../../Models/Models';
+import { MOCK_GROUP_MEMBERSHIPS } from '../mock-data/mock-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupMembershipService {
-  private groupMemberships: GroupMembership[] = [
-    {
-      membershipId: 1,
-      userId: 1,
-      groupId: 1,
-      isAdmin: true,
-      joinedAt: new Date('2022-01-01T10:00:00Z'),
-      metricData: []
-    },
-    {
-      membershipId: 2,
-      userId: 2,
-      groupId: 2,
-      isAdmin: false,
-      joinedAt: new Date('2022-02-01T11:00:00Z'),
-      metricData: []
-    }
-  ];
+  private groupMemberships: GroupMembership[] = MOCK_GROUP_MEMBERSHIPS;
 
   constructor() { }
 
@@ -31,8 +15,7 @@ export class GroupMembershipService {
   }
 
   getGroupMembershipById(membershipId: number): GroupMembership | null {
-    const membership = this.groupMemberships.find(m => m.membershipId === membershipId);
-    return membership ? membership : null;
+    return this.groupMemberships.find(m => m.membershipId === membershipId) || null;
   }
 
   addGroupMembership(membership: GroupMembership): void {

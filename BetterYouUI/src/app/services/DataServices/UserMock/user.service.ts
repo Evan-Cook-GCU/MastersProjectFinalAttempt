@@ -2,41 +2,18 @@ import { Injectable } from '@angular/core';
 import { User, Group, GroupMembership } from '../../../Models/Models';
 import { GroupMembershipService } from '../GroupMembershipMock/group-membership.service';
 import { GroupService } from '../GroupMock/group.service';
-
+import { MOCK_USERS } from '../mock-data/mock-data';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
-  private users: User[] = [
-      {
-          userId: 1,
-          userName: 'JohnDoe',
-          email: 'johndoe@example.com',
-          passwordHash: 'tset', // Mocked hash
-          createdAt: new Date('2022-01-01T10:00:00Z')
-      },
-      {
-          userId: 2,
-          userName: 'JaneSmith',
-          email: 'janesmith@example.com',
-          passwordHash: '5d41402abc4b2a76b9719d911017c592', // Mocked hash
-          createdAt: new Date('2022-02-01T11:00:00Z')
-      },
-      {
-          userId: 3,
-          userName: 'AliceJohnson',
-          email: 'alicejohnson@example.com',
-          passwordHash: '7c6a180b36896a0a8c02787eeafb0e4c', // Mocked hash
-          createdAt: new Date('2022-03-01T12:00:00Z')
-      }
-  ];
-  private groups: Group[] = [ /*... define your groups ...*/ ];
-  private groupMemberships: GroupMembership[] = [ /*... define your memberships ...*/ ];
+export class UserService{
+  private users: User[] = MOCK_USERS;
+
   constructor(
     private groupService: GroupService,
     private groupMembershipService: GroupMembershipService
   ) {}
-  
+
   getGroupsByUserId(userId: number): Group[] {
     const membershipIds = this.groupMembershipService
       .getGroupMemberships()
@@ -49,7 +26,7 @@ export class UserService {
   }
 
   addGroup(group: Group, userId: number): void {
-    this.groups.push(group);
+    this.groupService.addGroup(group);
     const newMembership: GroupMembership = {
       membershipId: new Date().getTime(), // Mock ID; replace with actual ID generation logic
       userId: userId,
@@ -58,32 +35,29 @@ export class UserService {
       joinedAt: new Date(),
       metricData: []
     };
-    this.groupMemberships.push(newMembership);
+    this.groupMembershipService.addGroupMembership(newMembership);
   }
+
   getUsers(): User[] {
-      return this.users;
+    return this.users;
   }
+
   updateUser(updatedUser: User): void {
     const index = this.users.findIndex(user => user.userId === updatedUser.userId);
     if (index !== -1) {
       this.users[index] = updatedUser;
     }
   }
+
   getUserById(userId: number): User | null {
-   var user= this.users.find(user => user.userId === userId);
-   if(user){
-     return user;
-   }else{
-     return null;
-   }
+    return this.users.find(user => user.userId === userId) || null;
   }
 
   addUser(user: User): void {
-      this.users.push(user);
+    this.users.push(user);
   }
 
   deleteUser(userId: number): void {
-      this.users = this.users.filter(user => user.userId !== userId);
+    this.users = this.users.filter(user => user.userId !== userId);
   }
-  
 }

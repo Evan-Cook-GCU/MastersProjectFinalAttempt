@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { ChartConfiguration, ChartType, ChartEvent, registerables, Chart } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
 import { Metric, MetricData } from "../../Models/Models";
@@ -15,6 +15,7 @@ Chart.register(...registerables);
   styleUrls: ['./graph.component.scss']
 })
 export class GraphComponent implements OnInit {
+  @Input() metrics: Metric[] = [];
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [],
     labels: [],
@@ -56,7 +57,6 @@ export class GraphComponent implements OnInit {
   public lineChartType: ChartType = 'line';
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-  metrics: Metric[] = [];
   selectedXMetric: Metric | null = null;
   selectedYMetric: Metric | null = null;
   xField: string | undefined;
@@ -70,6 +70,8 @@ export class GraphComponent implements OnInit {
       if (metrics.length > 0) {
         this.selectedXMetric = metrics[0];
         this.selectedYMetric = metrics[0];
+        this.xField = this.selectedXMetric.fields.length > 0 ? this.selectedXMetric.fields[0].Label : 'date';
+        this.yField = this.selectedYMetric.fields.length > 0 ? this.selectedYMetric.fields[0].Label : 'date';
         this.updateChart();
       }
     });
@@ -79,20 +81,17 @@ export class GraphComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const value = selectElement.value;
 
-    if (!this.yField) this.yField = this.metrics[0].fields[0].Label;
-    if (!this.xField) this.xField = this.metrics[0].fields[0].Label;
-    if (!this.selectedXMetric) this.selectedXMetric = this.metrics[0];
-    if (!this.selectedYMetric) this.selectedYMetric = this.metrics[0];
-
     switch (type) {
       case 'xMetric':
         this.selectedXMetric = this.metrics.find(metric => metric.metricId.toString() === value) || null;
+        this.xField = this.selectedXMetric?.fields[0].Label;
         break;
       case 'xField':
         this.xField = value;
         break;
       case 'yMetric':
         this.selectedYMetric = this.metrics.find(metric => metric.metricId.toString() === value) || null;
+        this.yField = this.selectedYMetric?.fields[0].Label;
         break;
       case 'yField':
         this.yField = value;
@@ -116,6 +115,7 @@ export class GraphComponent implements OnInit {
 
     this.chart?.update();
   }
+
 
   private createTableData(labels: any[], yData: number[]): { label: any, value: number }[] {
     return labels.map((label, index) => ({ label, value: yData[index] }));
@@ -146,6 +146,7 @@ export class GraphComponent implements OnInit {
   private createDataset(xData: number[], yData: number[]): { x: number, y: number }[] {
     return xData.map((x, index) => ({ x, y: yData[index] }));
   }
+
 
   private createLineChartData(labels: any[], dataset: { x: number, y: number }[]): ChartConfiguration['data'] {
     return {

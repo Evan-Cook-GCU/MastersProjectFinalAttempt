@@ -14,14 +14,14 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            return Ok(context.GroupMemberships.ToList());
+            return Ok(context.GroupMemberships.Include("MetricData").ToList());
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public IHttpActionResult Get(int id)
         {
-            var membership = context.GroupMemberships.FirstOrDefault(m => m.MembershipId == id);
+            var membership = context.GroupMemberships.Include("MetricData").FirstOrDefault(m => m.MembershipId == id);
             if (membership == null)
             {
                 return NotFound();

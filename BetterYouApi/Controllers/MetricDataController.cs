@@ -14,14 +14,14 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            return Ok(context.MetricDatas.ToList());
+            return Ok(context.MetricDatas.Include("Fields").ToList());
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public IHttpActionResult Get(int id)
         {
-            var data = context.MetricDatas.FirstOrDefault(md => md.MetricDataId == id);
+            var data = context.MetricDatas.Include("Fields").FirstOrDefault(md => md.MetricDataId == id);
             if (data == null)
             {
                 return NotFound();
@@ -33,7 +33,7 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult Create(MetricData data)
         {
-            data.DataDate = DateTime.Now;
+            data.Date = DateTime.Now;
             context.MetricDatas.Add(data);
             context.SaveChanges();
             return Created(new Uri(Request.RequestUri + "/" + data.MetricDataId), data);
@@ -48,8 +48,9 @@ namespace BetterYouApi.Controllers
             {
                 return NotFound();
             }
-            existingData.UserMetricId = data.UserMetricId;
-            existingData.DataValue = data.DataValue;
+            existingData.MetricId = data.MetricId;
+            existingData.Name = data.Name;
+            existingData.Date = data.Date;
             context.SaveChanges();
             return Ok(existingData);
         }

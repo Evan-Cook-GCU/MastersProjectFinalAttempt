@@ -1,52 +1,41 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Metric, MetricData } from '../../../Models/Models';
+import { MOCK_METRICS } from '../mock-data/mock-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MetricService {
 
-  private metricSubject = new BehaviorSubject<Metric[]>([]);
-
-  private metrics: Metric[] = [
-    {
-      metricId: 1,
-      Name: 'Performance',
-      fields: [{ Label: 'Score', Type: 'number' }],
-      data: [],
-      groupId: 1
-    },
-    {
-
-      metricId: 2,
-      Name: 'Attendance',
-      fields: [{ Label: 'Days Present', Type: 'number' }],
-      data: [],
-      groupId: 2
-    }
-
-  ];
+  private metricSubject = new BehaviorSubject<Metric[]>(MOCK_METRICS);
   metric$ = this.metricSubject.asObservable();
 
+  private metrics: Metric[] = MOCK_METRICS;
+
   constructor() {
+    //localStorage.clear();
     this.loadState();
     this.metricSubject.next(this.metrics);
   }
-  
+
   updateMetricData(data: Metric[]): void {
     this.metrics = data;
     this.metricSubject.next(this.metrics);
     this.saveState();
   }
-  
+
   addMetric(metric: Metric): void {
     metric.metricId = this.metrics.length + 1;
     this.metrics.push(metric);
     this.metricSubject.next(this.metrics);
     this.saveState();
   }
-  
+
+  getMetrics(): Metric[] {
+    return this.metrics;
+  }
+
   updateMetric(updatedMetric: Metric): void {
     const index = this.metrics.findIndex(m => m.metricId === updatedMetric.metricId);
     if (index !== -1) {
@@ -55,7 +44,7 @@ export class MetricService {
       this.saveState();
     }
   }
-  
+
   addMetricData(metricId: number, metricData: MetricData): void {
     const metric = this.metrics.find(m => m.metricId === metricId);
     if (metric) {
@@ -67,7 +56,7 @@ export class MetricService {
       this.saveState();
     }
   }
-  
+
   updateMetricDataList(metricId: number, metricData: MetricData[]): void {
     const metric = this.metrics.find(m => m.metricId === metricId);
     if (metric) {
@@ -79,7 +68,7 @@ export class MetricService {
       this.saveState();
     }
   }
-  
+
   removeMetricData(metricId: number, metricDataId: number): void {
     const metric = this.metrics.find(m => m.metricId === metricId);
     if (metric) {
@@ -88,15 +77,17 @@ export class MetricService {
       this.saveState();
     }
   }
+
   private saveState() {
     localStorage.setItem('metrics', JSON.stringify(this.metrics));
   }
-  
+
   private loadState() {
     const savedMetrics = localStorage.getItem('metrics');
     if (savedMetrics) {
       this.metrics = JSON.parse(savedMetrics);
     }
+   
   }
   
 }

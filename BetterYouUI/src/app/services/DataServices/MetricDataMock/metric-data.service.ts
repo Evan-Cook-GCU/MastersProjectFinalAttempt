@@ -1,28 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MetricData } from '../../../Models/Models';
+import { MOCK_METRIC_DATA } from '../mock-data/mock-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MetricDataService {
-  private metricData: MetricData[] = [
-    {
-      metricDataId: 1,
-      metricId: 1,
-      Name: 'John Doe Performance',
-      fields: [{ Label: 'Score', Value: 85 }],
-      date: new Date('2023-01-01T10:00:00Z'),
-      groupMembershipId: 1
-    },
-    {
-      metricDataId: 2,
-      metricId: 2,
-      Name: 'Jane Smith Attendance',
-      fields: [{ Label: 'Days Present', Value: 20 }],
-      date: new Date('2023-02-01T11:00:00Z'),
-      groupMembershipId: 2
-    }
-  ];
+  private metricData: MetricData[] = MOCK_METRIC_DATA;
 
   constructor() { }
 
@@ -31,8 +15,7 @@ export class MetricDataService {
   }
 
   getMetricDataById(metricDataId: number): MetricData | null {
-    const data = this.metricData.find(d => d.metricDataId === metricDataId);
-    return data ? data : null;
+    return this.metricData.find(d => d.metricDataId === metricDataId) || null;
   }
 
   addMetricData(data: MetricData): void {

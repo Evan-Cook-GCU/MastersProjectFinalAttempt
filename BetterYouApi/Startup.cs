@@ -2,6 +2,7 @@
 using Autofac.Integration.WebApi;
 using Common.Logging;
 using Microsoft.Owin;
+using Microsoft.Owin.Cors;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Owin;
@@ -71,10 +72,12 @@ namespace BetterYouApi
                 app.Use<LoggerMiddleware>();
                 var config = new HttpConfiguration();
 
+                // Enable CORS
+                app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+
                 //ConfigureDiagnosticsTracingForWebapi(config);
                 ConfigureSerialization(config);
                 config.MapHttpAttributeRoutes();
-
 
                 var swaggerConfig = new SwaggerConfig(config);
                 swaggerConfig.Register();
@@ -132,6 +135,7 @@ namespace BetterYouApi
             var json = config.Formatters.JsonFormatter;
             json.SerializerSettings = new JsonSerializerSettings
             {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 

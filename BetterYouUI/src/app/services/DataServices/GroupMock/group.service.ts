@@ -1,26 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Group } from '../../../Models/Models';
+import { MOCK_GROUPS } from '../mock-data/mock-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
-  private groups: Group[] = [
-    {
-      groupId: 1,
-      groupName: 'Admin',
-      description: 'Administrators Group',
-      createdAt: new Date('2022-01-01T10:00:00Z'),
-      metrics: []
-    },
-    {
-      groupId: 2,
-      groupName: 'Users',
-      description: 'Regular Users Group',
-      createdAt: new Date('2022-02-01T11:00:00Z'),
-      metrics: []
-    }
-  ];
+  private groups: Group[] = MOCK_GROUPS;
 
   constructor() { }
 
@@ -29,8 +15,7 @@ export class GroupService {
   }
 
   getGroupById(groupId: number): Group | null {
-    const group = this.groups.find(group => group.groupId === groupId);
-    return group ? group : null;
+    return this.groups.find(group => group.groupId === groupId) || null;
   }
 
   addGroup(group: Group): void {

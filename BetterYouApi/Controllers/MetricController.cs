@@ -14,14 +14,14 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            return Ok(context.Metrics.ToList());
+            return Ok(context.Metrics.Include("Fields").Include("Data").ToList());
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public IHttpActionResult Get(int id)
         {
-            var metric = context.Metrics.FirstOrDefault(m => m.MetricId == id);
+            var metric = context.Metrics.Include("Fields").Include("Data").FirstOrDefault(m => m.MetricId == id);
             if (metric == null)
             {
                 return NotFound();
@@ -47,9 +47,7 @@ namespace BetterYouApi.Controllers
             {
                 return NotFound();
             }
-            existingMetric.MetricName = metric.MetricName;
-            existingMetric.MetricType = metric.MetricType;
-            existingMetric.Description = metric.Description;
+            existingMetric.Name = metric.Name;
             context.SaveChanges();
             return Ok(existingMetric);
         }

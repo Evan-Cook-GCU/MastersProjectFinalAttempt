@@ -1,4 +1,4 @@
-<label for="xMetric">X Metric:</label>
+<div class="graph-container"><label for="xMetric">X Metric:</label>
 <select id="xMetric" (change)="onMetricFieldChange($event, 'xMetric')">
   <option *ngFor="let metric of metrics" [value]="metric.metricId">{{ metric.Name }}</option>
 </select>
@@ -36,3 +36,4 @@
     <td *ngFor="let data of tableData">{{ data.value }}</td>
   </tr>
 </table>
+</div>
