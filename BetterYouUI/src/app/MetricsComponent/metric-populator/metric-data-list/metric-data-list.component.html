@@ -1,24 +1,23 @@
 <p-table [value]="metricDataList">
-    <ng-template pTemplate="header">
-      <tr>
-        <th *ngFor="let label of labels">{{ label }}</th>
-        <th>Date</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-entry let-i="rowIndex">
-      <tr>
-        <td *ngFor="let label of labels">{{ getFieldValue(entry, label) }}</td>
-        <td>{{ entry.date | date: 'MM/dd/yyyy' }}</td>
-        <td>
-          <p-button icon="pi pi-trash" class="p-button-danger" (click)="removeEntry(i)"></p-button>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="4">No entries found.</td>
-      </tr>
-    </ng-template>
-  </p-table>
-  
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let label of labels">{{ label }}</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-entry let-i="rowIndex">
+    <tr>
+      <td *ngFor="let label of labels">{{ getFieldValue(entry, label) }}</td>
+      <td>{{ entry.date | date: 'MM/dd/yyyy' }}</td>
+      <td>
+        <p-button icon="pi pi-trash" class="p-button-danger" (click)="removeEntry(i)"></p-button>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="4">No entries found.</td>
+    </tr>
+  </ng-template>
+</p-table>

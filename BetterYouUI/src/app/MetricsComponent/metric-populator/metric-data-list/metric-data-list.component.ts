@@ -21,7 +21,7 @@ import { MetricDataService } from '../../../services/DataServices/metric-data.se
 })
 export class MetricDataListComponent {
   @Input() metricId: number | undefined;
-  metricDataList: MetricData[] = [];
+  metricDataList: any[] = [];
   labels: string[] = [];
   constructor(private metricService: MetricService,
     private userService: UserService,
@@ -31,7 +31,22 @@ export class MetricDataListComponent {
   update() {
     var user = this.userService.getLoggedInUser();
     this.metricDataService.getUsersDataForMetric(this.metricId || 0, user?.userId || 0).subscribe(data => {
-      this.metricDataList = data;
+      // Group data by date
+      const groupedData: { [key: string]: any } = {};
+      data.forEach(entry => {
+        if (!groupedData[entry.date]) {
+          groupedData[entry.date] = { date: entry.date, fields: {}, ids: [] };
+        }
+        groupedData[entry.date].ids.push(entry.metricDataId);
+        entry.fields.forEach(field => {
+          if (!groupedData[entry.date].fields[field.label]) {
+            groupedData[entry.date].fields[field.label] = field.value;
+          }
+        });
+      });
+      // Convert grouped data to array
+      this.metricDataList = Object.keys(groupedData).map(date => groupedData[date]);
+
       data.forEach(entry => {
         entry.fields.forEach(field => {
           if (!this.labels.includes(field.label)) {
@@ -41,19 +56,18 @@ export class MetricDataListComponent {
       });
     });
   }
-  getFieldValue(entry: MetricData, label: string): any {
-
-
-    const field = entry.fields.find(field => field.label === label);
-    return field ? field.value : '';
+  getFieldValue(entry: any, label: string): any {
+    return entry.fields[label] || '';
   }
   removeEntry(index: number): void {
-    const removedMetric = this.metricDataList.splice(index, 1)[0];
-    if (removedMetric) {
-      this.metricService.removeMetricData(removedMetric.metricDataId).subscribe(() => {
-        
-        this.update();
-    });
+    const removedMetricIds = this.metricDataList[index].ids;
+    if (removedMetricIds) {
+      removedMetricIds.forEach((id: number) => {
+        this.metricService.removeMetricData(id).subscribe(() => {
+          this.update();
+        });
+      });
+    }
   }
 }
-}
+

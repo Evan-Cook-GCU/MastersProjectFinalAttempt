@@ -30,14 +30,13 @@ export class MetricDataFormComponent {
   name: string = '';
   //getter and setter for metricId
   private eventSubscription: Subscription;
-  
 
   constructor(private formBuilder: FormBuilder, private metricService: MetricService,
     private metricDataService: MetricDataService,
     private usersService: UserService) {
-      this.eventSubscription = this.metricService.event$.subscribe(() => {
-        this.update();
-      });
+    this.eventSubscription = this.metricService.event$.subscribe(() => {
+      this.update();
+    });
     if (!(this.metricId == undefined || this.metricId == -1)) {
       this.update();
     }
@@ -53,7 +52,7 @@ export class MetricDataFormComponent {
       this.labels = fields.map(field => field.label);
       this.metricForm = this.formBuilder.group({
         fields: this.formBuilder.array(this.createFieldsArray(this.fields || [])),
-        date: [new Date(), Validators.required]
+        date: [this.getCurrentDate(), Validators.required]
       });
     });
     this.metricService.getMetric(this.metricId || 0).subscribe(metric => {
@@ -65,9 +64,11 @@ export class MetricDataFormComponent {
       this.update();
     }
   }
+  private getCurrentDate(): string {
+    return new Date().toISOString().split('T')[0];
+  }
 
   createFieldsArray(fields: Field[]): FormGroup[] {
-
     return fields.map(field => this.formBuilder.group({
       Label: [field.label, Validators.required],
       Type: [field.type, Validators.required],
@@ -78,7 +79,6 @@ export class MetricDataFormComponent {
     return VALID_FIELD_TYPES.includes(type) ? type : 'text';
   }
   onSubmit(): void {
-
     if (this.fields) {
       this.metricForm.value.fields.forEach((field: any) => {
         this.metricDataService.createMetricData(this.metricId || 0,
@@ -92,7 +92,6 @@ export class MetricDataFormComponent {
     }
   }
   get fieldsFormArray(): FormArray {
-
     return this.metricForm.get('fields') as FormArray;
   }
 }

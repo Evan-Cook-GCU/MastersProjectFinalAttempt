@@ -42,7 +42,7 @@ export interface MetricData {
     metricId: number;
     Name: string;
     fields: Data[];
-    date: Date; // Add the date property
+    date: string; // Add the date property
     groupMembershipId: number; // Added foreign key relationship
 }
 export interface Data {
