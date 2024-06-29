@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Web.Http;
 using BetterYouApi.Models;
+using BetterYouApi.Mappings;
+using System.Collections.Generic;
 
 namespace BetterYouApi.Controllers
 {
@@ -14,7 +16,8 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            return Ok(context.GroupMemberships.Include("MetricData").ToList());
+            var memberships = context.GroupMemberships.ToList().Select(MappingProfile.ToDTO);
+            return Ok(memberships);
         }
 
         [HttpGet]
@@ -26,33 +29,34 @@ namespace BetterYouApi.Controllers
             {
                 return NotFound();
             }
-            return Ok(membership);
+            return Ok(MappingProfile.ToDTO(membership));
         }
 
         [HttpPost]
         [Route("")]
-        public IHttpActionResult Create(GroupMembership membership)
+        public IHttpActionResult Create(GroupMembershipDTO membershipDto)
         {
+            var membership = MappingProfile.ToModel(membershipDto);
             membership.JoinedAt = DateTime.Now;
             context.GroupMemberships.Add(membership);
             context.SaveChanges();
-            return Created(new Uri(Request.RequestUri + "/" + membership.MembershipId), membership);
+            return Created(new Uri(Request.RequestUri + "/" + membership.MembershipId), MappingProfile.ToDTO(membership));
         }
 
         [HttpPut]
         [Route("{id:int}")]
-        public IHttpActionResult Update(int id, GroupMembership membership)
+        public IHttpActionResult Update(int id, GroupMembershipDTO membershipDto)
         {
             var existingMembership = context.GroupMemberships.FirstOrDefault(m => m.MembershipId == id);
             if (existingMembership == null)
             {
                 return NotFound();
             }
-            existingMembership.UserId = membership.UserId;
-            existingMembership.GroupId = membership.GroupId;
-            existingMembership.IsAdmin = membership.IsAdmin;
+            existingMembership.UserId = membershipDto.UserId;
+            existingMembership.GroupId = membershipDto.GroupId;
+            existingMembership.IsAdmin = membershipDto.IsAdmin;
             context.SaveChanges();
-            return Ok(existingMembership);
+            return Ok(MappingProfile.ToDTO(existingMembership));
         }
 
         [HttpDelete]
@@ -67,6 +71,20 @@ namespace BetterYouApi.Controllers
             context.GroupMemberships.Remove(membership);
             context.SaveChanges();
             return Ok();
+        }
+        [HttpGet]
+        [Route("user/{userId:int}/group/{groupId:int}")]
+        public IHttpActionResult GetMembershipByUserIdAndGroupId(int userId, int groupId)
+        {
+            // Fetch user's group memberships
+            var memberships = context.GroupMemberships.Where(gm => gm.UserId == userId).ToList();
+
+            if (!memberships.Any())
+            {
+                return NotFound();
+            }
+            var membershipDto = memberships.FirstOrDefault(m=>m.GroupId==groupId);
+            return Ok(MappingProfile.ToDTO(membershipDto));
         }
     }
 }

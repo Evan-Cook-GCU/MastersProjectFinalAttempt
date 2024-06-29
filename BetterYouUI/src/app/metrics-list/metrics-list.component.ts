@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Group, Metric, VALID_FIELD_TYPES } from '../Models/Models';
-import { MetricService } from '../services/DataServices/MetricService/metric.service';
 import { CommonModule } from '@angular/common';
+import { MetricService } from '../services/DataServices/metric.service';
 
 @Component({
   selector: 'app-metrics-list',
@@ -11,19 +11,26 @@ import { CommonModule } from '@angular/common';
   styleUrl: './metrics-list.component.scss'
 })
 export class MetricsListComponent implements OnInit {
-  @Input() group: Group | null = null;
+ 
   @Input() metrics: Metric[] = [];
+  
   constructor(private metricService: MetricService) { }
 
   ngOnInit(): void {
-    this.metricService.metric$.subscribe(metrics => {
-      this.metrics = metrics.map(metric => ({
-        ...metric,
-        fields: metric.fields.map(field => ({
-          ...field,
-          Type: this.getFieldType(field.Type)
-        }))
-      }));
+    this.loadMetricFields();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['metrics']) {
+      this.loadMetricFields();
+    }
+  }
+
+  private loadMetricFields(): void {
+    this.metrics.forEach(metric => {
+      this.metricService.getMetricFields(metric.metricId).subscribe(fields => {
+        metric.fields = fields;
+      });
     });
   }
 

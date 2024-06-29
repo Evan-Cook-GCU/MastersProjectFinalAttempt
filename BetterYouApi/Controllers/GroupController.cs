@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Web.Http;
 using BetterYouApi.Models;
+using BetterYouApi.Mappings;
+using System.Collections.Generic;
 
 namespace BetterYouApi.Controllers
 {
@@ -15,82 +16,46 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            var x=context.Groups.ToList();
-            return Ok(context.Groups.ToList());
+            var groups = context.Groups.ToList().Select(MappingProfile.ToDTO);
+            return Ok(groups);
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public IHttpActionResult Get(int id)
         {
-            var group = context.Groups
-                .Include("Metrics.Fields")
-                .Include("Metrics.Data.Fields")
-                .FirstOrDefault(g => g.GroupId == id);
+            var group = context.Groups.Include("Metrics").FirstOrDefault(g => g.GroupId == id);
             if (group == null)
             {
                 return NotFound();
             }
-
-            var groupDTO = new GroupDTO
-            {
-                GroupId = group.GroupId,
-                GroupName = group.GroupName,
-                Description = group.Description,
-                CreatedAt = group.CreatedAt,
-                Metrics = group.Metrics.Select(m => new MetricDTO
-                {
-                    MetricId = m.MetricId,
-                    Name = m.Name,
-                    Fields = m.Fields.Select(f => new FieldDTO
-                    {
-                        FieldId = f.FieldId,
-                        Label = f.Label,
-                        Type = f.Type
-                    }).ToList(),
-                    Data = m.Data.Select(d => new MetricDataDTO
-                    {
-                        MetricDataId = d.MetricDataId,
-                        MetricId = d.MetricId,
-                        Name = d.Name,
-                        Date = d.Date,
-                        GroupMembershipId = d.GroupMembershipId,
-                        Fields = d.Fields.Select(df => new DataDTO
-                        {
-                            DataId = df.DataId,
-                            Label = df.Label,
-                            Value = df.Value
-                        }).ToList()
-                    }).ToList()
-                }).ToList()
-            };
-
-            return Ok(groupDTO);
+            return Ok(MappingProfile.ToDTO(group));
         }
 
         [HttpPost]
         [Route("")]
-        public IHttpActionResult Create(Group group)
+        public IHttpActionResult Create(GroupDTO groupDto)
         {
+            var group = MappingProfile.ToModel(groupDto);
             group.CreatedAt = DateTime.Now;
             context.Groups.Add(group);
             context.SaveChanges();
-            return Created(new Uri(Request.RequestUri + "/" + group.GroupId), group);
+            return Created(new Uri(Request.RequestUri + "/" + group.GroupId), MappingProfile.ToDTO(group));
         }
 
         [HttpPut]
         [Route("{id:int}")]
-        public IHttpActionResult Update(int id, Group group)
+        public IHttpActionResult Update(int id, GroupDTO groupDto)
         {
             var existingGroup = context.Groups.FirstOrDefault(g => g.GroupId == id);
             if (existingGroup == null)
             {
                 return NotFound();
             }
-            existingGroup.GroupName = group.GroupName;
-            existingGroup.Description = group.Description;
+            existingGroup.GroupName = groupDto.GroupName;
+            existingGroup.Description = groupDto.Description;
             context.SaveChanges();
-            return Ok(existingGroup);
+            return Ok(MappingProfile.ToDTO(existingGroup));
         }
 
         [HttpDelete]
@@ -105,6 +70,37 @@ namespace BetterYouApi.Controllers
             context.Groups.Remove(group);
             context.SaveChanges();
             return Ok();
+        }
+        // New endpoint to get all metrics by group ID
+        [HttpGet]
+        [Route("{id:int}/metrics")]
+        public IHttpActionResult GetMetricsByGroupId(int id)
+        {
+            var metrics = context.Metrics.Where(m => m.GroupId == id).ToList();
+            if (!metrics.Any())
+            {
+                return NotFound();
+            }
+            return Ok(metrics.Select(MappingProfile.ToDTO));
+        }
+        // New endpoint to get all metrics by group ID
+        [HttpGet]
+        [Route("{id:int}/Members")]
+        public IHttpActionResult GetGroupMembers(int id)
+        {
+            var memberships = context.GroupMemberships.Where(m => m.GroupId == id).ToList();
+            
+            if (!memberships.Any())
+            {
+                return NotFound();
+            }
+            var members=new List<UserDTO>();
+            foreach (var membership in memberships)
+            {
+                var member=context.Users.FirstOrDefault(m=>m.UserId==membership.UserId); ;
+                members.Add(MappingProfile.ToDTO(member));
+            }
+            return Ok(members);
         }
     }
 }

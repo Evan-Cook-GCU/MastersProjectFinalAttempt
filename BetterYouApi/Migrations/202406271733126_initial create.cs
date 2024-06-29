@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialCreate : DbMigration
+    public partial class initialcreate : DbMigration
     {
         public override void Up()
         {
@@ -14,24 +14,33 @@
                         DataId = c.Int(nullable: false, identity: true),
                         Label = c.String(),
                         Value = c.Double(nullable: false),
+                        MetricDataId = c.Int(nullable: false),
                         MetricData_MetricDataId = c.Int(),
+                        MetricData_MetricDataId1 = c.Int(),
                     })
                 .PrimaryKey(t => t.DataId)
                 .ForeignKey("dbo.MetricDatas", t => t.MetricData_MetricDataId)
-                .Index(t => t.MetricData_MetricDataId);
+                .ForeignKey("dbo.MetricDatas", t => t.MetricData_MetricDataId1)
+                .ForeignKey("dbo.MetricDatas", t => t.MetricDataId, cascadeDelete: true)
+                .Index(t => t.MetricDataId)
+                .Index(t => t.MetricData_MetricDataId)
+                .Index(t => t.MetricData_MetricDataId1);
             
             CreateTable(
-                "dbo.Fields",
+                "dbo.MetricDatas",
                 c => new
                     {
-                        FieldId = c.Int(nullable: false, identity: true),
-                        Label = c.String(),
-                        Type = c.String(),
-                        Metric_MetricId = c.Int(),
+                        MetricDataId = c.Int(nullable: false, identity: true),
+                        MetricId = c.Int(nullable: false),
+                        Name = c.String(),
+                        Date = c.DateTime(nullable: false),
+                        GroupMembershipId = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => t.FieldId)
-                .ForeignKey("dbo.Metrics", t => t.Metric_MetricId)
-                .Index(t => t.Metric_MetricId);
+                .PrimaryKey(t => t.MetricDataId)
+                .ForeignKey("dbo.GroupMemberships", t => t.GroupMembershipId, cascadeDelete: false)
+                .ForeignKey("dbo.Metrics", t => t.MetricId, cascadeDelete: true)
+                .Index(t => t.MetricId)
+                .Index(t => t.GroupMembershipId);
             
             CreateTable(
                 "dbo.GroupMemberships",
@@ -73,20 +82,17 @@
                 .Index(t => t.GroupId);
             
             CreateTable(
-                "dbo.MetricDatas",
+                "dbo.Fields",
                 c => new
                     {
-                        MetricDataId = c.Int(nullable: false, identity: true),
+                        FieldId = c.Int(nullable: false, identity: true),
+                        Label = c.String(),
+                        Type = c.String(),
                         MetricId = c.Int(nullable: false),
-                        Name = c.String(),
-                        Date = c.DateTime(nullable: false),
-                        GroupMembershipId = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => t.MetricDataId)
-                .ForeignKey("dbo.GroupMemberships", t => t.GroupMembershipId, cascadeDelete: false)
+                .PrimaryKey(t => t.FieldId)
                 .ForeignKey("dbo.Metrics", t => t.MetricId, cascadeDelete: true)
-                .Index(t => t.MetricId)
-                .Index(t => t.GroupMembershipId);
+                .Index(t => t.MetricId);
             
             CreateTable(
                 "dbo.Users",
@@ -104,26 +110,30 @@
         
         public override void Down()
         {
+            DropForeignKey("dbo.Data", "MetricDataId", "dbo.MetricDatas");
+            DropForeignKey("dbo.MetricDatas", "MetricId", "dbo.Metrics");
+            DropForeignKey("dbo.MetricDatas", "GroupMembershipId", "dbo.GroupMemberships");
             DropForeignKey("dbo.GroupMemberships", "UserId", "dbo.Users");
             DropForeignKey("dbo.GroupMemberships", "GroupId", "dbo.Groups");
             DropForeignKey("dbo.Metrics", "GroupId", "dbo.Groups");
-            DropForeignKey("dbo.Fields", "Metric_MetricId", "dbo.Metrics");
-            DropForeignKey("dbo.MetricDatas", "MetricId", "dbo.Metrics");
-            DropForeignKey("dbo.MetricDatas", "GroupMembershipId", "dbo.GroupMemberships");
+            DropForeignKey("dbo.Fields", "MetricId", "dbo.Metrics");
+            DropForeignKey("dbo.Data", "MetricData_MetricDataId1", "dbo.MetricDatas");
             DropForeignKey("dbo.Data", "MetricData_MetricDataId", "dbo.MetricDatas");
-            DropIndex("dbo.MetricDatas", new[] { "GroupMembershipId" });
-            DropIndex("dbo.MetricDatas", new[] { "MetricId" });
+            DropIndex("dbo.Fields", new[] { "MetricId" });
             DropIndex("dbo.Metrics", new[] { "GroupId" });
             DropIndex("dbo.GroupMemberships", new[] { "GroupId" });
             DropIndex("dbo.GroupMemberships", new[] { "UserId" });
-            DropIndex("dbo.Fields", new[] { "Metric_MetricId" });
+            DropIndex("dbo.MetricDatas", new[] { "GroupMembershipId" });
+            DropIndex("dbo.MetricDatas", new[] { "MetricId" });
+            DropIndex("dbo.Data", new[] { "MetricData_MetricDataId1" });
             DropIndex("dbo.Data", new[] { "MetricData_MetricDataId" });
+            DropIndex("dbo.Data", new[] { "MetricDataId" });
             DropTable("dbo.Users");
-            DropTable("dbo.MetricDatas");
+            DropTable("dbo.Fields");
             DropTable("dbo.Metrics");
             DropTable("dbo.Groups");
             DropTable("dbo.GroupMemberships");
-            DropTable("dbo.Fields");
+            DropTable("dbo.MetricDatas");
             DropTable("dbo.Data");
         }
     }

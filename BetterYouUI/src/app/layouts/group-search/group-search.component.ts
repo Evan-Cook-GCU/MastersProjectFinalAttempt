@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { GroupService, GroupMembershipService, UserService } from '../../services/ApiCalls/ApiCalls';
 import { Group } from '../../Models/Models';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -8,6 +7,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { StorageService } from '../../services/storage/storage.service';
 import { ButtonModule } from 'primeng/button';
+import { GroupMembershipService } from '../../services/DataServices/group-membership.service';
+import { GroupService } from '../../services/DataServices/group.service';
+import { UserService } from '../../services/DataServices/user.service';
 @Component({
   selector: 'app-group-search',
   standalone: true,
@@ -37,10 +39,11 @@ export class GroupSearchComponent  implements OnInit {
   }
 
   private loadGroups(): void {
-    this.groupService.getAll().subscribe(groups => {
-      this.groups = groups;
+    this.groupService.getGroups().subscribe(data => {
+      this.groups = data;
       this.filteredGroups = this.groups;
-    });
+    })
+    
   }
 
   onSearch(event: any): void {
@@ -52,21 +55,9 @@ export class GroupSearchComponent  implements OnInit {
   }
 
   onViewGroup(group: Group): void {
-    if (this.userId !== null) {
-      this.checkMembershipAndNavigate(group);
-    } else {
-      this.router.navigate(['/default-group-viewer', group.groupId]);
-    }
+    this.router.navigate(['/group-viewer', group.groupId]);
+    
   }
 
-  private checkMembershipAndNavigate(group: Group): void {
-    this.groupMembershipService.getAll().subscribe(memberships => {
-      const membership = memberships.find(m => m.groupId === group.groupId && m.userId === this.userId);
-      if (membership && membership.isAdmin) {
-        this.router.navigate(['/admin-group-editor', group.groupId]);
-      } else {
-        this.router.navigate(['/user-group-view', group.groupId]);
-      }
-    });
-  }
+  
 }

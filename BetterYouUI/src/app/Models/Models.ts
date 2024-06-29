@@ -24,26 +24,18 @@ export interface GroupMembership {
     joinedAt: Date;
     metricData: MetricData[]; // Added relationship
 }
-
-// export interface UserMetric {
-//     userMetricId: number;
-//     userId: number;
-//     metricId: number;
-//     metricDataId: number;
-//     createdAt: Date;
-// }
-
 export interface Metric {
     metricId: number;
-    Name: string;
+    name: string;
     fields: Field[];
     data: MetricData[];
     groupId: number; // Added foreign key relationship
 }
 
 export interface Field {
-    Label: string;
-    Type: string;
+    fieldId: number;
+    label: string;
+    type: string;
 }
 export interface MetricData {
     metricDataId: number;
@@ -54,7 +46,8 @@ export interface MetricData {
     groupMembershipId: number; // Added foreign key relationship
 }
 export interface Data {
-    Label: string;
-    Value: number;
+    label: string;
+    value: number;
 }
 export const VALID_FIELD_TYPES: string[] = ['text', 'number', 'date', 'email', 'url', 'password', 'tel'];
+export const baseUrl = 'http://localhost:44060/';

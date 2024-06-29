@@ -1,9 +1,10 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { ChartConfiguration, ChartType, ChartEvent, registerables, Chart } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
 import { Metric, MetricData } from "../../Models/Models";
-import { MetricService } from "../../services/DataServices/MetricService/metric.service";
+import { MetricService } from "../../services/DataServices/metric.service";
+import { MetricDataService } from "../../services/DataServices/metric-data.service";
 
 Chart.register(...registerables);
 
@@ -16,6 +17,8 @@ Chart.register(...registerables);
 })
 export class GraphComponent implements OnInit {
   @Input() metrics: Metric[] = [];
+  @Input() selectedUserId: number | null = null;
+  public lineChartType: ChartType = 'line';
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [],
     labels: [],
@@ -54,7 +57,7 @@ export class GraphComponent implements OnInit {
     },
   };
 
-  public lineChartType: ChartType = 'line';
+  
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   selectedXMetric: Metric | null = null;
@@ -62,43 +65,69 @@ export class GraphComponent implements OnInit {
   xField: string | undefined;
   yField: string | undefined;
   public tableData: { label: any, value: number }[] = [];
-  constructor(private metricService: MetricService) {}
+  constructor(private metricService: MetricService,
+    private metricDaService: MetricDataService
+  ) {}
 
   ngOnInit(): void {
-    this.metricService.metric$.subscribe((metrics) => {
-      this.metrics = metrics;
-      if (metrics.length > 0) {
-        this.selectedXMetric = metrics[0];
-        this.selectedYMetric = metrics[0];
-        this.xField = this.selectedXMetric.fields.length > 0 ? this.selectedXMetric.fields[0].Label : 'date';
-        this.yField = this.selectedYMetric.fields.length > 0 ? this.selectedYMetric.fields[0].Label : 'date';
-        this.updateChart();
-      }
-    });
+    this.loadMetricFields();
   }
-
-  onMetricFieldChange(event: Event, type: 'xMetric' | 'xField' | 'yMetric' | 'yField'): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['metrics']) {
+      this.loadMetricFields();
+    }if (changes['selectedUserId']) {
+      this.loadMetricFields();
+    }
+  }
+  
+  private loadMetricFields(): void {
+    this.metrics.forEach(metric => {
+      this.metricService.getMetricFields(metric.metricId).subscribe(fields => {
+        metric.fields = fields;
+        if (this.metrics.length > 0) {
+          this.selectedXMetric = this.metrics[0];
+          this.selectedYMetric = this.metrics[0];
+          if (this.selectedXMetric && this.selectedXMetric.fields&& this.selectedXMetric.fields.length > 0) {
+            this.xField = 'Date'
+          }
+          if (this.selectedYMetric && this.selectedYMetric.fields&& this.selectedYMetric.fields.length > 0) {
+            this.yField = this.selectedYMetric.fields[0].label;
+          }
+          this.updateChart();
+        }
+      });
+    });
+    
+    
+  }
+  onXMetricFieldChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const value = selectElement.value;
-
-    switch (type) {
-      case 'xMetric':
-        this.selectedXMetric = this.metrics.find(metric => metric.metricId.toString() === value) || null;
-        this.xField = this.selectedXMetric?.fields[0].Label;
-        break;
-      case 'xField':
-        this.xField = value;
-        break;
-      case 'yMetric':
-        this.selectedYMetric = this.metrics.find(metric => metric.metricId.toString() === value) || null;
-        this.yField = this.selectedYMetric?.fields[0].Label;
-        break;
-      case 'yField':
-        this.yField = value;
-        break;
-    }
+    this.selectedXMetric = this.metrics.find(metric => metric.metricId.toString() === value) || null;
+    this.xField = this.selectedXMetric && this.selectedXMetric.fields.length > 0 ? this.selectedXMetric.fields[0].label :'Date' ;
     this.updateChart();
   }
+  onYMetricFieldChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const value = selectElement.value;
+    this.selectedYMetric = this.metrics.find(metric => metric.metricId.toString() === value) || null;
+    this.yField = this.selectedYMetric && this.selectedYMetric.fields.length > 0 ? this.selectedYMetric.fields[0].label : 'Date';
+    this.updateChart();
+  }
+  onxFieldChange(event: Event): void {
+
+    const selectElement = event.target as HTMLSelectElement;
+    const value = selectElement.value;
+    this.xField = value;
+    this.updateChart();
+  }
+  onyFieldChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const value = selectElement.value;
+    this.yField = value;
+    this.updateChart();
+  }
+  
 
   private updateChart(): void {
     if (!this.canUpdateChart()) return;
@@ -122,22 +151,59 @@ export class GraphComponent implements OnInit {
   }
 
   private canUpdateChart(): boolean {
-    return !!this.selectedXMetric && !!this.selectedXMetric.data && !!this.selectedYMetric && !!this.selectedYMetric.data && !!this.xField && !!this.yField;
+    if (!this.selectedUserId) {
+      return false;
+    }
+    if (!this.selectedXMetric) {
+      return false;
+    }
+  
+  if (!this.selectedXMetric.data) {
+    this.metricDaService.getUsersDataForMetric(this.selectedXMetric.metricId, this.selectedUserId).subscribe(data => {
+      this.selectedXMetric!.data = data;
+      this.loadMetricFields();
+    }
+    );
+      return false;
+  }
+  
+  if (!this.selectedYMetric) {
+      return false;
+  }
+  
+  if (!this.selectedYMetric.data) {
+    this.metricDaService.getUsersDataForMetric(this.selectedYMetric.metricId, this.selectedUserId).subscribe(data => {
+      this.selectedXMetric!.data = data;
+      this.loadMetricFields();
+    }
+    );
+      return false;
+  }
+  
+  if (!this.xField) {
+      return false;
+  }
+  
+  if (!this.yField) {
+      return false;
+  }
+  
+  return true;
   }
 
   private getXData(): number[] {
-    if (this.xField === 'date') {
+    if (this.xField === 'Date') {
       return this.selectedXMetric!.data.map(entry => new Date(entry.date).getTime());
     }
-    return this.selectedXMetric!.data.map(entry => entry.fields.find(f => f.Label === this.xField)?.Value || null).map(Number);
+    return this.selectedXMetric!.data.map(entry => entry.fields.find(f => f.label === this.xField)?.value || null).map(Number);
   }
 
   private getYData(): number[] {
-    return this.selectedYMetric!.data.map(entry => entry.fields.find(f => f.Label === this.yField)?.Value || null).map(Number);
+    return this.selectedYMetric!.data.map(entry => entry.fields.find(f => f.label === this.yField)?.value || null).map(Number);
   }
 
   private getXLabels(xData: number[]): any[] {
-    if (this.xField === 'date') {
+    if (this.xField === 'Date') {
       return this.selectedXMetric!.data.map(entry => new Date(entry.date).toDateString());
     }
     return xData;

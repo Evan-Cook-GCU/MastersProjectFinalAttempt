@@ -66,6 +66,11 @@ namespace BetterYouApi.Models
         public int FieldId { get; set; }
         public string Label { get; set; }
         public string Type { get; set; }
+        [ForeignKey("Metric")]
+        public int MetricId { get; set; }
+        public virtual Metric Metric { get; set; } // Added navigation property
+
+
     }
 
     public class MetricData
@@ -84,6 +89,7 @@ namespace BetterYouApi.Models
         public virtual Metric Metric { get; set; }
         public virtual GroupMembership GroupMembership { get; set; }
         public virtual ICollection<Data> Fields { get; set; }
+        public virtual ICollection<Data> Data { get; set; }
     }
 
     public class Data
@@ -92,62 +98,11 @@ namespace BetterYouApi.Models
         public int DataId { get; set; }
         public string Label { get; set; }
         public double Value { get; set; }
-    }
-    public class UserDTO
-    {
-        public int UserId { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-    }
 
-    public class GroupDTO
-    {
-        public int GroupId { get; set; }
-        public string GroupName { get; set; }
-        public string Description { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public List<MetricDTO> Metrics { get; set; }
-    }
-
-    public class GroupMembershipDTO
-    {
-        public int MembershipId { get; set; }
-        public int UserId { get; set; }
-        public int GroupId { get; set; }
-        public bool IsAdmin { get; set; }
-        public DateTime JoinedAt { get; set; }
-        public List<MetricDataDTO> MetricData { get; set; }
-    }
-
-    public class MetricDTO
-    {
-        public int MetricId { get; set; }
-        public string Name { get; set; }
-        public List<FieldDTO> Fields { get; set; }
-        public List<MetricDataDTO> Data { get; set; }
-    }
-
-    public class FieldDTO
-    {
-        public int FieldId { get; set; }
-        public string Label { get; set; }
-        public string Type { get; set; }
-    }
-
-    public class MetricDataDTO
-    {
+        [ForeignKey("MetricData")]
         public int MetricDataId { get; set; }
-        public int MetricId { get; set; }
-        public string Name { get; set; }
-        public DateTime Date { get; set; }
-        public int GroupMembershipId { get; set; }
-        public List<DataDTO> Fields { get; set; }
+
+        public virtual MetricData MetricData { get; set; } // Added navigation property
     }
 
-    public class DataDTO
-    {
-        public int DataId { get; set; }
-        public string Label { get; set; }
-        public double Value { get; set; }
-    }
 }

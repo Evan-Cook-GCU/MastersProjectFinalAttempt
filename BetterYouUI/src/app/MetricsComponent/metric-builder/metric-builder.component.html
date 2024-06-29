@@ -2,15 +2,15 @@
 
 <div *ngIf="options.length!=0">
   <select id="options" [ngModel]="selectedOption" (ngModelChange)="onOptionChange($event)">
-    <option *ngFor="let option of options" [ngValue]="option">{{ option.Name }}</option>
+    <option *ngFor="let option of options" [ngValue]="option">{{ option.name }}</option>
   </select>
 </div>
 <form [formGroup]="metricForm" (ngSubmit)="onSubmit()">
   <input formControlName="Name">
   <div formArrayName="fields">
     <div *ngFor="let field of fieldsFormArray.controls; let i=index" [formGroupName]="i">
-      <input formControlName="Label">
-        <select formControlName="Type">
+      <input formControlName="label">
+        <select formControlName="type">
           <option *ngFor="let type of validFieldTypes" [value]="type">{{ type }}</option>
         </select>
       <button type="button" (click)="deleteField(i)">Delete</button>

@@ -216,6 +216,7 @@
     <Compile Include="Attributes\ApiAuthorizeAttribute.cs" />
     <Compile Include="Attributes\AuthorizeByEnvironmentAttribute.cs" />
     <Compile Include="Configuration\SwaggerConfig.cs" />
+    <Compile Include="Controllers\FieldController.cs" />
     <Compile Include="Controllers\MetricDataController.cs" />
     <Compile Include="Controllers\MetricController.cs" />
     <Compile Include="Controllers\GroupMembershipController.cs" />
@@ -240,9 +241,10 @@
     <Compile Include="Logging\ResponseJsonWriter.cs" />
     <Compile Include="Logging\TrackingIdMiddleware.cs" />
     <Compile Include="Database\BetterYouContext.cs" />
-    <Compile Include="Migrations\202406262302008_InitialCreate.cs" />
-    <Compile Include="Migrations\202406262302008_InitialCreate.Designer.cs">
-      <DependentUpon>202406262302008_InitialCreate.cs</DependentUpon>
+    <Compile Include="Mapper\MappingProfile.cs" />
+    <Compile Include="Migrations\202406271733126_initial create.cs" />
+    <Compile Include="Migrations\202406271733126_initial create.Designer.cs">
+      <DependentUpon>202406271733126_initial create.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DTOs.cs" />
@@ -278,8 +280,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202406262302008_InitialCreate.resx">
-      <DependentUpon>202406262302008_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202406271733126_initial create.resx">
+      <DependentUpon>202406271733126_initial create.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

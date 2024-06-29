@@ -22,7 +22,8 @@
     
     <button type="submit">Update</button>
   </form>
-
+  <!-- button that logs you out-->
+  <button (click)="logOut()">Logout</button>
   <h3>Your Groups</h3>
   <button (click)="showGroupDialog()">Create New Group</button>
   <p-table [value]="userGroups">

@@ -31,7 +31,6 @@ export class ExcelExampleComponent {
  */
   parseExcelFile(file: File): void {
     this.excelParserService.parseExcel(file).then((sheet) => {
-      console.log(sheet);
       //clears the input in case same file needs uploading 
       this.fileInput.nativeElement.value = '';
     });

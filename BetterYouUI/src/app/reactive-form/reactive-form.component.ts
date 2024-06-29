@@ -36,6 +36,6 @@ export class ReactiveFormComponent {
   onSubmit() {
     // Emit event to possible child component
     this.showFormInput.emit(this.formGroup1.value)
-    console.log(this.formGroup1.value);
+    
   }
 }

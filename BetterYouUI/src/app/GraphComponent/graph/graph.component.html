@@ -1,22 +1,22 @@
 <div class="graph-container"><label for="xMetric">X Metric:</label>
-<select id="xMetric" (change)="onMetricFieldChange($event, 'xMetric')">
-  <option *ngFor="let metric of metrics" [value]="metric.metricId">{{ metric.Name }}</option>
+<select id="xMetric" (change)="onXMetricFieldChange($event)">
+  <option *ngFor="let metric of metrics" [value]="metric.metricId">{{ metric.name }}</option>
 </select>
 
 <label for="xField">X Field:</label>
-<select id="xField" (change)="onMetricFieldChange($event, 'xField')">
+<select id="xField" (change)="onxFieldChange($event)">
   <option value="date">Date</option>
-  <option *ngFor="let field of selectedXMetric?.fields" [value]="field.Label">{{ field.Label }}</option>
+  <option *ngFor="let field of selectedXMetric?.fields" [value]="field.label">{{ field.label }}</option>
 </select>
 
 <label for="yMetric">Y Metric:</label>
-<select id="yMetric" (change)="onMetricFieldChange($event, 'yMetric')">
-  <option *ngFor="let metric of metrics" [value]="metric.metricId">{{ metric.Name }}</option>
+<select id="yMetric" (change)="onYMetricFieldChange($event)">
+  <option *ngFor="let metric of metrics" [value]="metric.metricId">{{ metric.name }}</option>
 </select>
 
 <label for="yField">Y Field:</label>
-<select id="yField" (change)="onMetricFieldChange($event, 'yField')">
-  <option *ngFor="let field of selectedYMetric?.fields" [value]="field.Label">{{ field.Label }}</option>
+<select id="yField" (change)="onyFieldChange($event)">
+  <option *ngFor="let field of selectedYMetric?.fields" [value]="field.label">{{ field.label }}</option>
 </select>
 
 <canvas

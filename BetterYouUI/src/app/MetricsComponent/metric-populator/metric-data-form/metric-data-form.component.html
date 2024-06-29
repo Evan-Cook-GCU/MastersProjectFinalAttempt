@@ -1,0 +1,11 @@
+<form [formGroup]="metricForm" (ngSubmit)="onSubmit()">
+  <div formArrayName="fields">
+    <div *ngFor="let field of fieldsFormArray.controls; let i=index" [formGroupName]="i">
+      <label [for]="'field-' + i">{{ field.value.Label }}</label>
+      <input [id]="'field-' + i" [type]="getFieldType(field.value.type)" formControlName="Value" placeholder="{{ field.value.label }}">
+    </div>
+  </div>
+  <label for="metricDate">Date:</label>
+  <input id="metricDate" type="date" formControlName="date">
+  <button type="submit">Submit</button>
+</form>

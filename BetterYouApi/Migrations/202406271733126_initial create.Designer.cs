@@ -7,13 +7,13 @@ namespace BetterYouApi.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class InitialCreate : IMigrationMetadata
+    public sealed partial class initialcreate : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(initialcreate));
         
         string IMigrationMetadata.Id
         {
-            get { return "202406262302008_InitialCreate"; }
+            get { return "202406271733126_initial create"; }
         }
         
         string IMigrationMetadata.Source

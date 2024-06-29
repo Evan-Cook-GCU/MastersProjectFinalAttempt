@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
-import { GroupMembership } from '../../../Models/Models';
-import { MOCK_GROUP_MEMBERSHIPS } from '../mock-data/mock-data';
+import { GroupMembership, baseUrl } from '../../Models/Models';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupMembershipService {
-  private groupMemberships: GroupMembership[] = MOCK_GROUP_MEMBERSHIPS;
+  private groupMemberships: GroupMembership[] = [];
 
-  constructor() { }
+  constructor(private http:HttpClient) { }
 
+  getMembership(userId: number, groupId: number):  Observable<GroupMembership> {
+    return this.http.get<GroupMembership>(baseUrl + 'api/groupmemberships/user/' + userId+'/group/'+groupId);
+  }
+  
   getGroupMemberships(): GroupMembership[] {
     return this.groupMemberships;
   }
