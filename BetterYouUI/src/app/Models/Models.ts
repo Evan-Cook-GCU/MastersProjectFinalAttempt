@@ -13,6 +13,7 @@ export interface Group {
     groupName: string;
     description: string;
     createdAt: Date;
+    metrics: Metric[]; // Added relationship
 }
 
 export interface GroupMembership {
@@ -21,43 +22,32 @@ export interface GroupMembership {
     groupId: number;
     isAdmin: boolean;
     joinedAt: Date;
-}
-
-
-
-export interface UserMetric {
-    userMetricId: number;
-    userId: number;
-    metricId: number;
-    createdAt: Date;
-}
-
-export interface MetricData {
-    metricDataId: number;
-    userMetricId: number;
-    dataValue: { [key: string]: number }; // Dynamic keys for metric data
-    dataDate: Date;
+    metricData: MetricData[]; // Added relationship
 }
 export interface Metric {
     metricId: number;
-    Name: string;
+    name: string;
     fields: Field[];
-    data: MetricData2[];
+    data: MetricData[];
+    groupId: number; // Added foreign key relationship
 }
 
 export interface Field {
-    Label: string;
-    Type: string;
+    fieldId: number;
+    label: string;
+    type: string;
 }
-export interface MetricData2 {
+export interface MetricData {
     metricDataId: number;
     metricId: number;
     Name: string;
     fields: Data[];
-    date: Date; // Add the date property
+    date: string; // Add the date property
+    groupMembershipId: number; // Added foreign key relationship
 }
 export interface Data {
-    Label: string;
-    Value: number;
+    label: string;
+    value: number;
 }
 export const VALID_FIELD_TYPES: string[] = ['text', 'number', 'date', 'email', 'url', 'password', 'tel'];
+export const baseUrl = 'http://localhost:44060/';

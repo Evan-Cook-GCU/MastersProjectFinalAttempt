@@ -6,7 +6,7 @@ import { GraphComponent } from "../../GraphComponent/graph/graph.component";
     standalone: true,
     templateUrl: './layout4.component.html',
     styleUrl: './layout4.component.scss',
-    imports: [GraphComponent]
+    imports: []
 })
 export class Layout4Component {
 

@@ -12,7 +12,6 @@ export class StorageService {
       localStorage.removeItem(key);
       localStorage.removeItem(key + '_expiresIn');
     } catch (e) {
-      console.log('removeStorage: Error removing key [' + key + '] from localStorage: ' + JSON.stringify(e));
       return false;
     }
     return true;
@@ -56,7 +55,6 @@ export class StorageService {
       localStorage.setItem(key, value);
       localStorage.setItem(key + '_expiresIn', schedule.toString());
     } catch (e) {
-      console.log('setStorage: Error setting key [' + key + '] in localStorage: ' + JSON.stringify(e));
       return false;
     }
     return true;

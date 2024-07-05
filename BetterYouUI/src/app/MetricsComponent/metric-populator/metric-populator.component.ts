@@ -1,115 +1,61 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Field, Metric, MetricData2, VALID_FIELD_TYPES } from '../../Models/Models'; // Importing from the Models file
+import { Component, Input, OnInit, SimpleChanges, ViewChild, viewChild } from '@angular/core';
+import { Field, Metric, MetricData, VALID_FIELD_TYPES } from '../../Models/Models'; // Importing from the Models file
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
-import { MetricService } from '../../services/MetricService/metric.service';
+import { MetricService } from '../../services/DataServices/metric.service';
+import { MetricDataFormComponent } from './metric-data-form/metric-data-form.component';
+import { MetricDataListComponent } from './metric-data-list/metric-data-list.component';
 
 @Component({
   selector: 'app-metric-populator',
   standalone: true,
   imports: [CommonModule,
-     ReactiveFormsModule,
-      FormsModule,CommonModule, ReactiveFormsModule, TableModule, ButtonModule, InputTextModule, CalendarModule],
+    ReactiveFormsModule,
+    FormsModule, CommonModule, ReactiveFormsModule, TableModule, ButtonModule, InputTextModule, CalendarModule, MetricDataFormComponent,
+    MetricDataListComponent],
   templateUrl: './metric-populator.component.html',
   styleUrls: ['./metric-populator.component.scss']
 })
 export class MetricPopulatorComponent implements OnInit {
-  @Input() item: Metric | null = null; // Input property to receive a Metric object
-  metricForm: FormGroup; // Form group for the form
-  metricDataList: MetricData2[] = []; // List to store submitted MetricData2 objects
-  labels: string[] = []; // List of labels for table headers
+  @Input() item: Metric | null = null;
+  @ViewChild(MetricDataFormComponent) formComponent!: MetricDataFormComponent;
+  @ViewChild(MetricDataListComponent) ListComponent!: MetricDataListComponent;
+  
+  metricDataList: MetricData[] = [];
+  labels: string[] = [];
 
-  constructor(private formBuilder: FormBuilder,private metricService: MetricService) {
-    console.log(this.item);
-    // Initialize the form group with Name, fields array, and date
-    this.metricForm = this.formBuilder.group({
-      Name: [this.item?.Name, Validators.required],
-      fields: this.formBuilder.array(this.createFieldsArray(this.item?.fields || [])),
-      date: [new Date(), Validators.required] // Add the date form control
-    });
-    console.log(this.metricForm?.value.fields);
+
+  constructor( private metricService: MetricService) {
   }
 
   ngOnInit(): void {
-    console.log(this.item);
-    const fields: Field[] = this.item?.fields ?? [];
-    this.labels = fields.map(field => field.Label); // Initialize labels
-    // Map fields to form groups
-    this.metricForm = this.formBuilder.group({
-      Name: [this.item?.Name, Validators.required],
-      fields: this.formBuilder.array(this.createFieldsArray(fields)),
-      date: [this.getCurrentDate(), Validators.required] // Initialize the date form control
-    });
   }
-  private getCurrentDate(): string {
-    return new Date().toISOString().split('T')[0]; // Get current date without time
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['item']) {
+      this.formComponent?.update();
+    }
   }
-  get fieldsFormArray(): FormArray {
-    return this.metricForm.get('fields') as FormArray;
+  ngAfterViewInit(): void {
+    // Ensure the child component's update method is called after view initialization
+    if (this.formComponent) {
+      this.formComponent.update();
+    }
+    if (this.ListComponent) {
+      this.ListComponent.update();
+    }
   }
-
-  createFieldsArray(fields: Field[]): FormGroup[] {
-    // Create an array of form groups for each field
-    return fields.map(field => this.formBuilder.group({
-      Label: [field.Label, Validators.required],
-      Type: [field.Type, Validators.required],
-      Value: ['', Validators.required] // Add a value control to store the field input
-    }));
+  update() {
+    this.formComponent?.update();
   }
 
-  onSubmit(): void {
-    if (this.item) {
-      const newMetricData2: MetricData2 = {
-        metricDataId: this.metricDataList.length + 1,
-        metricId: this.item.metricId,
-        Name: this.metricForm.value.Name,
-        fields: this.metricForm.value.fields.map((field: any) => ({
-          Label: field.Label,
-          Value: field.Value
-        })),
-        date: this.metricForm.value.date
-      };
-  
-      const existingIndex = this.metricDataList.findIndex(metric => metric.date === newMetricData2.date);
-  
-      if (existingIndex !== -1) {
-        this.metricDataList[existingIndex] = newMetricData2;
-      } else {
-        this.metricDataList.push(newMetricData2);
-      }
-  
-      this.metricDataList.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      this.metricService.updateMetricDataList(this.item.metricId, this.metricDataList);
-      //this.metricService.updateMetric({ ...this.item, data: this.metricDataList });
-      console.log(this.metricDataList);
+  handleFormSubmitted(): void {
+    if (this.ListComponent) {
+      this.ListComponent.update();
     }
   }
 
-  resetForm(): void {
-    // Reset the form and clear the fields
-    this.metricForm.reset();
-    this.fieldsFormArray.clear();
-    this.metricForm.patchValue({ date: this.getCurrentDate() });
-  }
-
-  getFieldType(type: string): string {
-    return VALID_FIELD_TYPES.includes(type) ? type : 'text';
-  }
-  
-
-  getFieldValue(entry: MetricData2, label: string): any {
-    const field = entry.fields.find(field => field.Label === label);
-    return field ? field.Value : '';
-  }
-
-  removeEntry(index: number): void {
-    const removedMetric = this.metricDataList.splice(index, 1)[0];
-    if (removedMetric) {
-      this.metricService.removeMetricData(this.item?.metricId!, removedMetric.metricDataId);
-    }
-  }
 }

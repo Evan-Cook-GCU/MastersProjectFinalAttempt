@@ -1,9 +1,18 @@
 import { Routes } from '@angular/router';
+import { GroupSearchComponent } from './group-search/group-search.component';
 
 export const layoutRoutes: Routes = [
   {
     path: 'layout-1',
     loadComponent: () => import('./layout1/layout1.component').then(c => c.Layout1Component)
+  },
+  {
+    path: 'user-home-page',
+    loadComponent: () => import('./user-home-page/user-home-page.component').then(c => c.UserHomePageComponent)
+  },
+  {
+    path: 'group-search',
+    loadComponent: () => import('./group-search/group-search.component').then(c => c.GroupSearchComponent)
   },
   {
     path: 'layout-2',
@@ -20,6 +29,25 @@ export const layoutRoutes: Routes = [
   {
     path: 'reactive-form',
     loadComponent: () => import('../reactive-form/reactive-form.component').then(c => c.ReactiveFormComponent)
+  }, {
+    path: 'group-search',
+    loadComponent: () => import('./group-search/group-search.component').then(c => c.GroupSearchComponent)
+  },
+  // {
+  //   path: 'admin-group-editor/:groupId',
+  //   loadComponent: () => import('./admin-group-editor/admin-group-editor.component').then(c => c.AdminGroupEditorComponent)
+  // },
+  // {
+  //   path: 'default-group-viewer/:groupId',
+  //   loadComponent: () => import('./default-group-viewer/default-group-viewer.component').then(c => c.DefaultGroupViewerComponent)
+  // },
+  // {
+  //   path: 'user-group-view/:groupId',
+  //   loadComponent: () => import('./user-group-view/user-group-view.component').then(c => c.UserGroupViewComponent)
+  // },
+  {
+    path: 'group-viewer/:groupId',
+    loadComponent: () => import('./group-viewer/group-viewer.component').then(c => c.GroupViewerComponent)
   }
-]
+];
 

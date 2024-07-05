@@ -1,8 +1,8 @@
 <div *ngFor="let metric of metrics">
-    <h3>{{ metric.Name }}</h3>
+    <h3>{{ metric.name }}</h3>
     <ul>
       <li *ngFor="let field of metric.fields">
-        {{ field.Label }} ({{ field.Type || 'text' }})
+        {{ field.label }} ({{ field.type || 'text' }})
       </li>
       <li>Date</li>
     </ul>

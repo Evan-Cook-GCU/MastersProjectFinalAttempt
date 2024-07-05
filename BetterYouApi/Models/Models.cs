@@ -1,14 +1,10 @@
-﻿/// <summary>
-/// 
-/// </summary>
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace BetterYouApi.Models
 {
-
-
     public class User
     {
         [Key]
@@ -19,7 +15,6 @@ namespace BetterYouApi.Models
         public DateTime CreatedAt { get; set; }
 
         public virtual ICollection<GroupMembership> GroupMemberships { get; set; }
-        public virtual ICollection<UserMetric> UserMetrics { get; set; }
     }
 
     public class Group
@@ -31,6 +26,7 @@ namespace BetterYouApi.Models
         public DateTime CreatedAt { get; set; }
 
         public virtual ICollection<GroupMembership> GroupMemberships { get; set; }
+        public virtual ICollection<Metric> Metrics { get; set; } // Added relationship
     }
 
     public class GroupMembership
@@ -47,33 +43,34 @@ namespace BetterYouApi.Models
 
         public virtual User User { get; set; }
         public virtual Group Group { get; set; }
+        public virtual ICollection<MetricData> MetricData { get; set; } // Added relationship
     }
 
     public class Metric
     {
         [Key]
         public int MetricId { get; set; }
-        public string MetricName { get; set; }
-        public string MetricType { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; }
 
-        public virtual ICollection<UserMetric> UserMetrics { get; set; }
+        [ForeignKey("Group")]
+        public int GroupId { get; set; } // Added foreign key relationship
+
+        public virtual Group Group { get; set; }
+        public virtual ICollection<Field> Fields { get; set; }
+        public virtual ICollection<MetricData> Data { get; set; }
     }
 
-    public class UserMetric
+    public class Field
     {
         [Key]
-        public int UserMetricId { get; set; }
-
-        [ForeignKey("User")]
-        public int UserId { get; set; }
+        public int FieldId { get; set; }
+        public string Label { get; set; }
+        public string Type { get; set; }
         [ForeignKey("Metric")]
         public int MetricId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public virtual Metric Metric { get; set; } // Added navigation property
 
-        public virtual User User { get; set; }
-        public virtual Metric Metric { get; set; }
-        public virtual ICollection<MetricData> MetricData { get; set; }
+
     }
 
     public class MetricData
@@ -81,12 +78,31 @@ namespace BetterYouApi.Models
         [Key]
         public int MetricDataId { get; set; }
 
-        [ForeignKey("UserMetric")]
-        public int UserMetricId { get; set; }
-        public string DataValue { get; set; }
-        public DateTime DataDate { get; set; }
+        [ForeignKey("Metric")]
+        public int MetricId { get; set; }
+        public string Name { get; set; }
+        public DateTime Date { get; set; } // Add the date property
 
-        public virtual UserMetric UserMetric { get; set; }
+        [ForeignKey("GroupMembership")]
+        public int GroupMembershipId { get; set; } // Added foreign key relationship
+
+        public virtual Metric Metric { get; set; }
+        public virtual GroupMembership GroupMembership { get; set; }
+        public virtual ICollection<Data> Fields { get; set; }
+        public virtual ICollection<Data> Data { get; set; }
+    }
+
+    public class Data
+    {
+        [Key]
+        public int DataId { get; set; }
+        public string Label { get; set; }
+        public double Value { get; set; }
+
+        [ForeignKey("MetricData")]
+        public int MetricDataId { get; set; }
+
+        public virtual MetricData MetricData { get; set; } // Added navigation property
     }
 
 }
