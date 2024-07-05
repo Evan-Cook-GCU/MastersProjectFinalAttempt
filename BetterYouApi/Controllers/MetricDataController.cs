@@ -5,6 +5,7 @@ using BetterYouApi.Models;
 using BetterYouApi.Mappings;
 using System.Data;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 
 namespace BetterYouApi.Controllers
 {
@@ -53,10 +54,10 @@ namespace BetterYouApi.Controllers
             {
                 return NotFound();
             }
-            existingData.MetricId = metricDataDto.MetricId;
-            existingData.Name = metricDataDto.Name;
-            existingData.Date = metricDataDto.Date;
+
+            UpdateExistingData(existingData, metricDataDto);
             context.SaveChanges();
+
             return Ok(MappingProfile.ToDTO(existingData));
         }
 
@@ -69,8 +70,10 @@ namespace BetterYouApi.Controllers
             {
                 return NotFound();
             }
+
             context.MetricDatas.Remove(data);
             context.SaveChanges();
+
             return Ok();
         }
 
@@ -83,27 +86,85 @@ namespace BetterYouApi.Controllers
             {
                 return NotFound();
             }
-            var dataList = context.Datas.ToList().Where(d => d.MetricDataId == metricDataId).ToList();
+
+            var dataList = context.Datas.Where(d => d.MetricDataId == metricDataId).ToList();
             if (dataList == null)
             {
                 return NotFound();
             }
+
             return Ok(dataList.Select(MappingProfile.ToDTO));
         }
+
         [HttpGet]
         [Route("user/{userId:int}/metric/{metricId:int}")]
         public IHttpActionResult GetMetricDataByUserIdAndMetricId(int userId, int metricId)
         {
-            // Fetch user's group memberships
-            var memberships = context.GroupMemberships.Where(gm => gm.UserId == userId).Select(gm => gm.MembershipId).ToList();
+            var memberships = GetMembershipsByUserId(userId);
 
             if (!memberships.Any())
             {
                 return NotFound();
             }
 
-            // Fetch metric data related to user's memberships and specific metric
+            var metricDataList = GetMetricDataList(memberships, metricId);
+
+            if (!metricDataList.Any())
+            {
+                return Ok(new List<MetricDataDTO>());
+            }
+
+            var metricDataDTOs = MapMetricDataToDTO(metricDataList);
+            metricDataDTOs = metricDataDTOs.OrderBy(md => md.Date).ToList();
+
+            return Ok(metricDataDTOs);
+        }
+
+        [HttpPost]
+        [Route("create")]
+        public IHttpActionResult CreateMetricData(CreateMetricDataModel createData)
+        {
+            var metric = context.Metrics.FirstOrDefault(m => m.MetricId == createData.MetricId);
+            var groupMembership = GetGroupMembership(createData.UserId, metric.GroupId);
+
+            if (groupMembership == null)
+            {
+                return NotFound();
+            }
+
+            var existingMetricData = GetExistingMetricData(createData.MetricId, groupMembership.MembershipId, createData.Date);
+
+            if (existingMetricData.Any())
+            {
+                UpdateExistingMetricData(existingMetricData, createData);
+                context.SaveChanges();
+                return Ok(MappingProfile.ToDTO(existingMetricData.FirstOrDefault()));
+            }
+            else
+            {
+                var metricData = CreateNewMetricData(createData, groupMembership);
+                context.MetricDatas.AddOrUpdate(metricData);
+                context.SaveChanges();
+                return Created(new Uri(Request.RequestUri + "/" + metricData.MetricDataId), MappingProfile.ToDTO(metricData));
+            }
+        }
+
+        private void UpdateExistingData(MetricData existingData, MetricDataDTO metricDataDto)
+        {
+            existingData.MetricId = metricDataDto.MetricId;
+            existingData.Name = metricDataDto.Name;
+            existingData.Date = metricDataDto.Date;
+        }
+
+        private List<int> GetMembershipsByUserId(int userId)
+        {
+            return context.GroupMemberships.Where(gm => gm.UserId == userId).Select(gm => gm.MembershipId).ToList();
+        }
+
+        private List<MetricData> GetMetricDataList(List<int> memberships, int metricId)
+        {
             var metricDataList = new List<MetricData>();
+
             foreach (var membershipId in memberships)
             {
                 var data = context.MetricDatas
@@ -112,21 +173,18 @@ namespace BetterYouApi.Controllers
                 metricDataList.AddRange(data);
             }
 
-            if (!metricDataList.Any())
-            {
-                return Ok(new List<MetricDataDTO>());
-            }
+            return metricDataList;
+        }
 
-            // Map to DTOs
+        private List<MetricDataDTO> MapMetricDataToDTO(List<MetricData> metricDataList)
+        {
             var metricDataDTOs = new List<MetricDataDTO>();
+
             foreach (var metricData in metricDataList)
             {
-                var dataDTOs = new List<DataDTO>();
-                var fields =context.Datas.Where(d => d.MetricDataId == metricData.MetricDataId).ToList();
-                foreach (var field in fields)
-                {
-                    dataDTOs.Add(MappingProfile.ToDTO(field));
-                }
+                var dataDTOs = context.Datas.Where(d => d.MetricDataId == metricData.MetricDataId)
+                    .Select(MappingProfile.ToDTO)
+                    .ToList();
 
                 var metricDataDTO = new MetricDataDTO
                 {
@@ -137,54 +195,75 @@ namespace BetterYouApi.Controllers
                     GroupMembershipId = metricData.GroupMembershipId,
                     Fields = dataDTOs
                 };
+
                 metricDataDTOs.Add(metricDataDTO);
             }
 
-            return Ok(metricDataDTOs);
+            return metricDataDTOs;
         }
 
-        [HttpPost]
-        [Route("create")]
-        public IHttpActionResult CreateMetricData(createMetricData createData)
+        private GroupMembership GetGroupMembership(int userId, int groupId)
         {
-            var metric = context.Metrics.FirstOrDefault(m => m.MetricId == createData.metricId);
-            // Fetch the GroupMembershipId for the given userId
-            var groupMembership = context.GroupMemberships.FirstOrDefault(gm => gm.UserId == createData.userId && gm.GroupId==metric.GroupId);
-            if (groupMembership == null)
-            {
-                return NotFound();
-            }
+            return context.GroupMemberships.FirstOrDefault(gm => gm.UserId == userId && gm.GroupId == groupId);
+        }
 
-            // Create new MetricData
-            var metricData = new MetricData
+        private List<MetricData> GetExistingMetricData(int metricId, int membershipId, DateTime date)
+        {
+            return context.MetricDatas.Where(md => md.MetricId == metricId
+                && md.GroupMembershipId == membershipId
+                && md.Date == date)
+                .ToList();
+        }
+
+        private void UpdateExistingMetricData(List<MetricData> existingMetricData, CreateMetricDataModel createData)
+        {
+            foreach (var existingMetricDatum in existingMetricData)
             {
-                MetricId = createData.metricId,
+                foreach (var data in existingMetricDatum.Fields)
+                {
+                    if (data.Label == createData.Label)
+                    {
+                        data.Value = createData.Value;
+                    }
+                    else
+                    {
+                        existingMetricDatum.Fields.Add(new Data
+                        {
+                            Label = createData.Label,
+                            Value = createData.Value
+                        });
+                    }
+                }
+                context.MetricDatas.AddOrUpdate(existingMetricDatum);
+            }
+        }
+
+        private MetricData CreateNewMetricData(CreateMetricDataModel createData, GroupMembership groupMembership)
+        {
+            return new MetricData
+            {
+                MetricId = createData.MetricId,
                 GroupMembershipId = groupMembership.MembershipId,
-                Name = createData.label,
-                Date = createData.date,
+                Name = createData.Label,
+                Date = createData.Date,
                 Fields = new List<Data>
                 {
                     new Data
                     {
-                        Label = createData.label,
-                        Value = createData.value
+                        Label = createData.Label,
+                        Value = createData.Value
                     }
                 }
             };
-
-            context.MetricDatas.Add(metricData);
-            context.SaveChanges();
-            context.Datas.Where(d => d.MetricDataId == metricData.MetricDataId).ToList();
-
-            return Created(new Uri(Request.RequestUri + "/" + metricData.MetricDataId), MappingProfile.ToDTO(metricData));
         }
-        public class createMetricData
+
+        public class CreateMetricDataModel
         {
-            public int metricId { get; set; }
-            public int userId { get; set; }
-            public string label { get; set; }
-            public double value { get; set; }
-            public DateTime date { get; set; }
+            public int MetricId { get; set; }
+            public int UserId { get; set; }
+            public string Label { get; set; }
+            public double Value { get; set; }
+            public DateTime Date { get; set; }
         }
     }
 }

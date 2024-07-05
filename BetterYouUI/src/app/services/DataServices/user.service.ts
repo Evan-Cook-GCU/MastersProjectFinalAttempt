@@ -37,7 +37,7 @@ export class UserService {
     this.http.post<User>(baseUrl + 'api/users/login',logindto,{headers}).subscribe(user => {
       this.storageService.setStorage('loggedInUser', JSON.stringify(user));
       this.storageService.setStorage('loggedInUserId', user?.userId.toString() || '');
-      this.router.navigate(['/user-home-page']);
+      window.location.reload();
     }
     );
   }
@@ -56,14 +56,7 @@ export class UserService {
   
   addGroup(group: Group, userId: number): void {
     this.groupService.addGroup(group);
-    this.groupMembershipService.addGroupMembership({
-      membershipId: new Date().getTime(),
-      userId: userId,
-      groupId: group.groupId,
-      isAdmin: true,
-      joinedAt: new Date(),
-      metricData: []
-    });
   }
+    
 
 }

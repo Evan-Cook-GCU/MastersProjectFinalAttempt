@@ -86,7 +86,9 @@ export class MetricDataFormComponent {
           field.Label,
           field.Value,
           this.metricForm.value.date).subscribe(() => {
-            this.formSubmitted.emit();  // Emit the event after form submission
+            this.formSubmitted.emit();
+              // Emit the event after form submission
+              this.metricDataService.emitEvent('data added');
           })
       });
     }

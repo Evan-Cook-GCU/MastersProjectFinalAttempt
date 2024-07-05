@@ -65,6 +65,7 @@ export class MetricDataListComponent {
       removedMetricIds.forEach((id: number) => {
         this.metricService.removeMetricData(id).subscribe(() => {
           this.update();
+          this.metricDataService.emitEvent('data removed');
         });
       });
     }

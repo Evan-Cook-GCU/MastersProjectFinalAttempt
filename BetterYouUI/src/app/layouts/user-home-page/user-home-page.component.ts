@@ -42,11 +42,11 @@ export class UserHomePageComponent implements OnInit {
   }
 logOut() {
     this.userService.LogOut();
-    this.router.navigate(['/user-home-page']);
+    window.location.reload();
+    
   }
   login() {
     this.userService.LogIn(this.loginForm.username, this.loginForm.password);
-    
   }
 
   updateUserDetails() {

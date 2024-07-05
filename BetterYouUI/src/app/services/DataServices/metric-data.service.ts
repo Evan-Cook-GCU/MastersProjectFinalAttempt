@@ -2,14 +2,21 @@ import { Injectable } from '@angular/core';
 import { MetricData, baseUrl } from '../../Models/Models';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MetricDataService {
   private metricData: MetricData[] = [];
+  private eventSubject = new Subject<string>();
 
-  constructor(private http:HttpClient) { }
+  event$ = this.eventSubject.asObservable();
+
+  emitEvent(data: string) {
+    this.eventSubject.next(data);
+  }
+  constructor(private http:HttpClient) { } 
 
   getMetricData(): MetricData[] {
     return this.metricData;
