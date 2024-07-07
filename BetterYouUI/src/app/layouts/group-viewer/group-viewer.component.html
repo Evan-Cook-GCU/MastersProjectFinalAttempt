@@ -1,5 +1,14 @@
 <div class="page container-fluid">
-    <h2 class="text-center">{{group?.groupName}}</h2>
+    <h2 class="text-center">
+    {{ group?.groupName }}
+    <button 
+      *ngIf="membershipsLoaded&&loggedInUser" 
+      class="btn" 
+      [ngClass]="{'btn-danger': isMember(loggedInUser), 'btn-success': !isMember(loggedInUser)}" 
+      (click)="toggleMembership()">
+      {{ isMember(loggedInUser) ? 'Quit Group' : 'Join Group' }}
+    </button>
+  </h2>
     <div class="row">
       <div class="col-md-3 my-2">
         <label for="groupMember">Select Group Member:</label>
@@ -20,10 +29,10 @@
                 </mat-card-content>
               </mat-card>
             </mat-tab>
-            <mat-tab *ngIf="loggedInUser" label="MetricPopulator">
+            <mat-tab *ngIf="membershipsLoaded&&isMember(loggedInUser)" label="MetricPopulator">
               <mat-card>
                 <mat-card-content>
-                  <app-metric-lister [metrics]="metrics" ></app-metric-lister>
+                  <!-- <app-metric-lister [metrics]="metrics" ></app-metric-lister> -->
                 </mat-card-content>
               </mat-card>
             </mat-tab>
@@ -31,6 +40,13 @@
               <mat-card>
                 <mat-card-content>
                   <app-metric-builder [group]="group"></app-metric-builder>
+                </mat-card-content>
+              </mat-card>
+            </mat-tab>
+            <mat-tab *ngIf="membership?.isAdmin" label="Members">
+              <mat-card>
+                <mat-card-content>
+                  <app-membership-management [group]="group"></app-membership-management>
                 </mat-card-content>
               </mat-card>
             </mat-tab>

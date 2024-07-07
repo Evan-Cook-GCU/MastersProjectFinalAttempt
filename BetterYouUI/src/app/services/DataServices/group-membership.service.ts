@@ -15,26 +15,25 @@ export class GroupMembershipService {
     return this.http.get<GroupMembership>(baseUrl + 'api/groupmemberships/user/' + userId+'/group/'+groupId);
   }
   
-  getGroupMemberships(): GroupMembership[] {
-    return this.groupMemberships;
+  getGroupMemberships(): Observable<GroupMembership[]> {
+    return this.http.get<GroupMembership[]>(`${baseUrl}api/groupmemberships`);
+  }
+  getMembershipsByGroup(groupId: number): Observable<GroupMembership[]> {
+    return this.http.get<GroupMembership[]>(`${baseUrl}api/groupmemberships/group/${groupId}`);
+  }
+  getGroupMembershipById(membershipId: number): Observable<GroupMembership> {
+    return this.http.get<GroupMembership>(`${baseUrl}api/groupmemberships/${membershipId}`);
   }
 
-  getGroupMembershipById(membershipId: number): GroupMembership | null {
-    return this.groupMemberships.find(m => m.membershipId === membershipId) || null;
+  addGroupMembership(membership: GroupMembership): Observable<GroupMembership> {
+    return this.http.post<GroupMembership>(`${baseUrl}api/groupmemberships`, membership);
   }
 
-  addGroupMembership(membership: GroupMembership): void {
-    this.groupMemberships.push(membership);
+  updateGroupMembership(updatedMembership: GroupMembership): Observable<GroupMembership> {
+    return this.http.put<GroupMembership>(`${baseUrl}api/groupmemberships/${updatedMembership.membershipId}`, updatedMembership);
   }
 
-  updateGroupMembership(updatedMembership: GroupMembership): void {
-    const index = this.groupMemberships.findIndex(m => m.membershipId === updatedMembership.membershipId);
-    if (index !== -1) {
-      this.groupMemberships[index] = updatedMembership;
-    }
-  }
-
-  deleteGroupMembership(membershipId: number): void {
-    this.groupMemberships = this.groupMemberships.filter(m => m.membershipId !== membershipId);
+  deleteGroupMembership(membershipId: number): Observable<void> {
+    return this.http.delete<void>(`${baseUrl}api/groupmemberships/${membershipId}`);
   }
 }
