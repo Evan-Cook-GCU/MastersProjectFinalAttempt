@@ -9,6 +9,7 @@
     
     <button type="submit">Login</button>
   </form>
+  <button (click)="showSignupDialog()">Signup</button>
 </div>
 
 <div *ngIf="loggedInUser">
@@ -22,7 +23,6 @@
     
     <button type="submit">Update</button>
   </form>
-  <!-- button that logs you out-->
   <button (click)="logOut()">Logout</button>
   <h3>Your Groups</h3>
   <button (click)="showGroupDialog()">Create New Group</button>
@@ -55,7 +55,29 @@
   </div>
   
   <p-footer>
-    <button type="button" pButton label="Cancel" (click)="displayGroupDialog=false">cancel</button>
-    <button type="button" pButton label="Save" (click)="saveGroup()">save</button>
+    <button type="button" pButton label="Cancel" (click)="displayGroupDialog=false">Cancel</button>
+    <button type="button" pButton label="Save" (click)="saveGroup()">Save</button>
+  </p-footer>
+</p-dialog>
+
+<p-dialog header="Signup" [(visible)]="displaySignupDialog" [modal]="true" [closable]="false">
+  <div class="p-fluid">
+    <div class="p-field">
+      <label for="signupUsername">Username</label>
+      <input id="signupUsername" type="text" [(ngModel)]="newUser.userName" pInputText>
+    </div>
+    <div class="p-field">
+      <label for="signupEmail">Email</label>
+      <input id="signupEmail" type="email" [(ngModel)]="newUser.email" pInputText>
+    </div>
+    <div class="p-field">
+      <label for="signupPassword">Password</label>
+      <input id="signupPassword" type="password" [(ngModel)]="newUser.passwordHash" pInputText>
+    </div>
+  </div>
+  
+  <p-footer>
+    <button type="button" pButton label="Cancel" (click)="displaySignupDialog=false">Cancel</button>
+    <button type="button" pButton label="Signup" (click)="signup()">Signup</button>
   </p-footer>
 </p-dialog>

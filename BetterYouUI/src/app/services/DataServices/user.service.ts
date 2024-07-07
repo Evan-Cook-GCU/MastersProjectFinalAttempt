@@ -27,6 +27,10 @@ export class UserService {
   getLoggedInUser(): User | null {
     return localStorage.getItem('loggedInUser') ? JSON.parse(localStorage.getItem('loggedInUser')!) : null;
   }
+  getLoggedInUserId(): number | null {
+    return localStorage.getItem('loggedInUserId') ? parseInt(localStorage.getItem('loggedInUserId')!) : null;
+  }
+  
   LogOut(): void {
     this.storageService.removeStorage('loggedInUser');
     this.storageService.removeStorage('loggedInUserId');
@@ -37,6 +41,8 @@ export class UserService {
     this.http.post<User>(baseUrl + 'api/users/login',logindto,{headers}).subscribe(user => {
       this.storageService.setStorage('loggedInUser', JSON.stringify(user));
       this.storageService.setStorage('loggedInUserId', user?.userId.toString() || '');
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      localStorage.setItem('loggedInUserId', user?.userId.toString() || '');
       window.location.reload();
     }
     );
@@ -52,7 +58,10 @@ export class UserService {
       return this.http.get<User[]>(baseUrl + 'api/groups/' + groupId+'/Members');
     }
   
-
+    createUser(user: User): Observable<User> {
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+      return this.http.post<User>(baseUrl + 'api/users', user, { headers });
+    }
   
   addGroup(group: Group, userId: number): void {
     this.groupService.addGroup(group);

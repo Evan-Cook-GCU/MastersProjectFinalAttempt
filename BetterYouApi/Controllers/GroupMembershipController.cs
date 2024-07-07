@@ -59,6 +59,7 @@ namespace BetterYouApi.Controllers
             return Ok(MappingProfile.ToDTO(existingMembership));
         }
 
+
         [HttpDelete]
         [Route("{id:int}")]
         public IHttpActionResult Delete(int id)
@@ -73,17 +74,24 @@ namespace BetterYouApi.Controllers
             return Ok();
         }
         [HttpGet]
+        [Route("group/{groupId:int}")]
+        public IHttpActionResult GetMembershipsByGroup(int groupId)
+        {
+            var memberships = context.GroupMemberships.Where(m => m.GroupId == groupId).ToList();
+            var mem2=memberships.Select(MappingProfile.ToDTO).ToList();
+            return Ok(mem2);
+        }
+        [HttpGet]
         [Route("user/{userId:int}/group/{groupId:int}")]
         public IHttpActionResult GetMembershipByUserIdAndGroupId(int userId, int groupId)
         {
-            // Fetch user's group memberships
             var memberships = context.GroupMemberships.Where(gm => gm.UserId == userId).ToList();
 
             if (!memberships.Any())
             {
-                return NotFound();
+                return Ok();
             }
-            var membershipDto = memberships.FirstOrDefault(m=>m.GroupId==groupId);
+            var membershipDto = memberships.FirstOrDefault(m => m.GroupId == groupId);
             return Ok(MappingProfile.ToDTO(membershipDto));
         }
     }

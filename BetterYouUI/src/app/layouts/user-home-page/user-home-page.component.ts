@@ -21,17 +21,20 @@ export class UserHomePageComponent implements OnInit {
   userGroups: Group[] = [];
   loginForm = { username: '', password: '' };
   displayGroupDialog: boolean = false;
+
+  displaySignupDialog: boolean = false;
   newGroup: Group = { groupId: 0, groupName: '', description: '', createdAt: new Date(), metrics: [] };
+  newUser: User = { userId: 0, userName: '', email: '', passwordHash: '', createdAt: new Date() };
 
   constructor(private storageService: StorageService, private userService: UserService, private router: Router,
     private groupService: GroupService, private groupMembershipService: GroupMembershipService
   ) { }
 
   ngOnInit() {
-    const userId = this.storageService.getStorage('loggedInUserId');
+    const userId = this.userService.getLoggedInUserId();
     if (userId) {
       this.loggedInUser = this.userService.getLoggedInUser();
-      this.loadUserGroups(parseInt(userId));
+      this.loadUserGroups(userId);
     }
   }
 
@@ -58,7 +61,9 @@ logOut() {
   showGroupDialog() {
     this.displayGroupDialog = true;
   }
-
+  showSignupDialog() {
+    this.displaySignupDialog = true;
+  }
   saveGroup() {
     if (this.loggedInUser) {
       this.newGroup.groupId = new Date().getTime(); // Mock ID; replace with actual ID generation logic
@@ -70,7 +75,13 @@ logOut() {
       
     }
   }
-
+  signup() {
+    this.newUser.createdAt = new Date();
+    this.userService.createUser(this.newUser).subscribe(user => {
+      this.displaySignupDialog = false;
+      this.newUser = { userId: 0, userName: '', email: '', passwordHash: '', createdAt: new Date() };
+    });
+  }
   openGroupEditor(groupId: number) {
     this.router.navigate(['/group-viewer', groupId]);
   }
