@@ -9,10 +9,11 @@ import { Router } from '@angular/router';
 import { UserService } from '../../services/DataServices/user.service';
 import { GroupMembershipService } from '../../services/DataServices/group-membership.service';
 import { GroupService } from '../../services/DataServices/group.service';
+import { ChatComponent } from "../../Components/chat/chat.component";
 @Component({
   selector: 'app-user-home-page',
   standalone: true,
-  imports: [FormsModule, CommonModule, TableModule, DialogModule],
+  imports: [FormsModule, CommonModule, TableModule, DialogModule, ChatComponent],
   templateUrl: './user-home-page.component.html',
   styleUrl: './user-home-page.component.scss'
 })
