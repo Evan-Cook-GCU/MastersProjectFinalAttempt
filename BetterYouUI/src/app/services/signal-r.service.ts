@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as $ from 'jquery';
 import 'signalr';
+import * as $ from 'jquery';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,9 +12,9 @@ export class SignalRService {
     this.initializeSignalR();
   }
 
-  private initializeSignalR(): void {
+  public initializeSignalR(): void {
     const win: any = window;
-    if (!win.jQuery) {
+    /*if (!win.jQuery) {
       win.jQuery = $;
     }
     if (!win.$) {
@@ -22,9 +22,9 @@ export class SignalRService {
     }
     if (!win.SignalR) {
       win.SignalR = $.signalR;
-    }
-
-    this.connection = $.hubConnection('http://localhost:44060');
+    }*/
+console.log($.hubConnection);
+    this.connection = jQuery.hubConnection('http://localhost:44060');
     this.proxy = this.connection.createHubProxy('chatHub');
 
     this.proxy.on('broadcastMessage', (user: string, message: string) => {

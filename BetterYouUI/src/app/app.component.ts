@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavComponent } from './nav/nav.component';
 import { RouterOutlet } from '@angular/router';
 import { SideBarComponent } from './side-bar/side-bar.component';
+//import { SignalRService } from './services/signal-r.service';
 
 @Component({
   selector: 'app-root',
@@ -16,4 +17,8 @@ import { SideBarComponent } from './side-bar/side-bar.component';
 })
 export class AppComponent {
   title = 'BetterYouUI';
+
+  // constructor(signalr: SignalRService){ 
+  //  // signalr.initializeSignalR();
+  // }
 }
