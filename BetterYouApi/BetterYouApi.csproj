@@ -234,6 +234,7 @@
   <ItemGroup>
     <Compile Include="Attributes\ApiAuthorizeAttribute.cs" />
     <Compile Include="Attributes\AuthorizeByEnvironmentAttribute.cs" />
+    <Compile Include="ChatHub.cs" />
     <Compile Include="Configuration\SwaggerConfig.cs" />
     <Compile Include="Controllers\FieldController.cs" />
     <Compile Include="Controllers\MetricDataController.cs" />
