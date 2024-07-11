@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import 'signalr';
 import * as $ from 'jquery';
+import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
   private connection!: SignalR.Hub.Connection;
   private proxy!: SignalR.Hub.Proxy;
-
+  private messageReceivedSource = new Subject<{ user: string, text: string }>();
+  messageReceived$ = this.messageReceivedSource.asObservable();
   constructor() {
     this.initializeSignalR();
   }
@@ -28,6 +30,7 @@ console.log($.hubConnection);
     this.proxy = this.connection.createHubProxy('chatHub');
 
     this.proxy.on('broadcastMessage', (user: string, message: string) => {
+      this.messageReceivedSource.next({ user, text: message });
       console.log(`${user}: ${message}`);
     });
 

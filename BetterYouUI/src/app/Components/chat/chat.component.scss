@@ -1,0 +1,8 @@
+.messages-container {
+    max-height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: calc(3 * 200px); /* Assuming each column is 200px wide */
+  }
+  
