@@ -17,11 +17,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { MembershipManagementComponent } from '../../Components/membership-management/membership-management.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { ChatComponent } from "../../Components/chat/chat.component";
 @Component({
   selector: 'app-group-viewer',
   standalone: true,
   imports: [CommonModule, GraphComponent, MatTabsModule, MatCardModule, MetricBuilderComponent, MetricListerComponent,
-     MetricsListComponent, MembershipManagementComponent],
+    MetricsListComponent, MembershipManagementComponent, ChatComponent],
   templateUrl: './group-viewer.component.html',
   styleUrl: './group-viewer.component.scss'
 })

@@ -104,5 +104,18 @@ namespace BetterYouApi.Models
 
         public virtual MetricData MetricData { get; set; } // Added navigation property
     }
+    /*public class ChatMessage
+    {
+        [Key]
+        public int ChatMessageId { get; set; }
 
+        [ForeignKey("Group")]
+        public int GroupId { get; set; }
+
+        [ForeignKey("User")]
+        public int SenderId { get; set; }
+        public string Content { get; set; }
+        public DateTime SentAt { get; set; }
+
+    }*/
 }
