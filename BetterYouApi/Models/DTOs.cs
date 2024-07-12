@@ -75,5 +75,14 @@ namespace BetterYouApi.Models
         public double Value { get; set; }
         public int MetricDataId { get; set; }
     }
-    
+    public class GroupChatMessageDTO
+    {
+        public int ChatMessageId { get; set; }
+        public int GroupId { get; set; }
+        public string Sender { get; set; }
+        public string Content { get; set; }
+        public DateTime SentAt { get; set; }
+    }
+
+
 }

@@ -19,6 +19,7 @@ namespace BetterYouApi.Models
         public DbSet<MetricData> MetricDatas { get; set; }
         public DbSet<Field> Fields { get; set; }
         public DbSet<Data> Datas { get; set; }
+        public DbSet<GroupChatMessage> GroupChatMessages { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

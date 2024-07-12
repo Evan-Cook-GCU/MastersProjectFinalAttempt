@@ -164,5 +164,16 @@ namespace BetterYouApi.Mappings
                 MetricDataId = dataDto.MetricDataId
             };
         }
+        public static GroupChatMessageDTO ToDTO(GroupChatMessage message)
+        {
+            return new GroupChatMessageDTO
+            {
+                ChatMessageId = message.ChatMessageId,
+                GroupId = message.GroupId,
+                Sender = message.User.UserName,
+                Content = message.Content,
+                SentAt = message.SentAt
+            };
+        }
     }
 }

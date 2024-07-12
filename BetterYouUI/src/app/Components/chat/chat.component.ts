@@ -4,7 +4,7 @@ import { GroupChatService } from '../../services/GroupChatService.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-import { Group, User } from '../../Models/Models';
+import { Group, GroupChatMessage, User } from '../../Models/Models';
 import { UserService } from '../../services/DataServices/user.service';
 
 @Component({
@@ -32,6 +32,12 @@ export class ChatComponent implements  AfterViewChecked {
       this.groupChat.messageReceived$.subscribe((msg) => {
         this.messages.push(msg);
         this.scrollToBottom();
+      });
+      this.groupChat.getChatHistory(this.group.groupId).subscribe((history) => {
+        this.messages = history.map((msg: GroupChatMessage) => ({
+          user: msg.sender, // Adjust as needed
+          text: msg.content
+        }));
       });
     }
   }

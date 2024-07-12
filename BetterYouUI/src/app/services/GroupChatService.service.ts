@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import 'signalr';
 import * as $ from 'jquery';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { GroupChatMessage } from '../Models/Models';
+import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +12,7 @@ export class GroupChatService {
   private proxy!: SignalR.Hub.Proxy;
   private messageReceivedSource = new Subject<{ user: string, text: string }>();
   messageReceived$ = this.messageReceivedSource.asObservable();
-  constructor() {
+  constructor(private http: HttpClient) {
     this.initializeSignalR();
   }
 
@@ -34,5 +36,8 @@ export class GroupChatService {
   public sendMessage(groupId:string, user: string, message: string): void {
     this.proxy.invoke('SendGroupMessage', groupId, user, message)
       .fail((error: any) => console.error('Invocation failed. Error: ', error));
+  }
+  public getChatHistory(groupId: number): Observable<GroupChatMessage[]> {
+    return this.http.get<GroupChatMessage[]>(`http://localhost:44060/api/groupchat/${groupId}/history`);
   }
 }

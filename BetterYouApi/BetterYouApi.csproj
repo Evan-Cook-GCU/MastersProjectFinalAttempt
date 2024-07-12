@@ -237,6 +237,7 @@
     <Compile Include="ChatHub.cs" />
     <Compile Include="Configuration\SwaggerConfig.cs" />
     <Compile Include="Controllers\FieldController.cs" />
+    <Compile Include="Controllers\GroupChatController.cs" />
     <Compile Include="Controllers\MetricDataController.cs" />
     <Compile Include="Controllers\MetricController.cs" />
     <Compile Include="Controllers\GroupMembershipController.cs" />
@@ -265,6 +266,10 @@
     <Compile Include="Migrations\202406271733126_initial create.cs" />
     <Compile Include="Migrations\202406271733126_initial create.Designer.cs">
       <DependentUpon>202406271733126_initial create.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202407120135496_add group chat messaging.cs" />
+    <Compile Include="Migrations\202407120135496_add group chat messaging.Designer.cs">
+      <DependentUpon>202407120135496_add group chat messaging.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DTOs.cs" />
@@ -302,6 +307,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202406271733126_initial create.resx">
       <DependentUpon>202406271733126_initial create.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407120135496_add group chat messaging.resx">
+      <DependentUpon>202407120135496_add group chat messaging.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
