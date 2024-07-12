@@ -35,5 +35,26 @@ namespace BetterYouApi.Hubs
                 Clients.All.broadcastGrpupMessage(groupId, user, message);
             }
         }
+        public void SendConversationMessage(int conversationId, int senderId, string message)
+        {
+            var conversation = context.Conversations.FirstOrDefault(c => c.ConversationId == conversationId);
+            var sender = context.Users.FirstOrDefault(u => u.UserId == senderId);
+
+            if (conversation != null && sender != null)
+            {
+                var chatMessage = new ConversationMessage
+                {
+                    ConversationId = conversationId,
+                    SenderId = senderId,
+                    Content = message,
+                    SentAt = DateTime.Now
+                };
+
+                context.ConversationMessages.Add(chatMessage);
+                context.SaveChanges();
+                string senderName=context.Users.First(u => u.UserId == senderId).UserName;
+                Clients.All.broadcastConversationMessage(conversationId, senderName, message);
+            }
+        }
     }
 }

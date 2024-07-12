@@ -175,5 +175,52 @@ namespace BetterYouApi.Mappings
                 SentAt = message.SentAt
             };
         }
+        public static ConversationDTO ToDTO(Conversation conversation)
+        {
+            return new ConversationDTO
+            {
+                ConversationId = conversation.ConversationId,
+                StartedAt = conversation.StartedAt,
+                User1Id = conversation.User1Id,
+                User2Id = conversation.User2Id,
+                Messages = conversation.Messages.Select(ToDTO).ToList()
+            };
+        }
+
+        public static Conversation ToModel(ConversationDTO conversationDto)
+        {
+            return new Conversation
+            {
+                ConversationId = conversationDto.ConversationId,
+                StartedAt = conversationDto.StartedAt,
+                User1Id = conversationDto.User1Id,
+                User2Id = conversationDto.User2Id,
+                Messages = conversationDto.Messages.Select(ToModel).ToList()
+            };
+        }
+
+        public static ConversationMessageDTO ToDTO(ConversationMessage message)
+        {
+            return new ConversationMessageDTO
+            {
+                MessageId = message.MessageId,
+                ConversationId = message.ConversationId,
+                SenderId = message.SenderId,
+                Content = message.Content,
+                SentAt = message.SentAt
+            };
+        }
+
+        public static ConversationMessage ToModel(ConversationMessageDTO messageDto)
+        {
+            return new ConversationMessage
+            {
+                MessageId = messageDto.MessageId,
+                ConversationId = messageDto.ConversationId,
+                SenderId = messageDto.SenderId,
+                Content = messageDto.Content,
+                SentAt = messageDto.SentAt
+            };
+        }
     }
 }

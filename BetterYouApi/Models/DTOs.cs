@@ -83,6 +83,22 @@ namespace BetterYouApi.Models
         public string Content { get; set; }
         public DateTime SentAt { get; set; }
     }
+    public class ConversationDTO
+    {
+        public int ConversationId { get; set; }
+        public DateTime StartedAt { get; set; }
+        public int User1Id { get; set; }
+        public int User2Id { get; set; }
+        public List<ConversationMessageDTO> Messages { get; set; }
+    }
 
+    public class ConversationMessageDTO
+    {
+        public int MessageId { get; set; }
+        public int ConversationId { get; set; }
+        public int SenderId { get; set; }
+        public string Content { get; set; }
+        public DateTime SentAt { get; set; }
+    }
 
 }

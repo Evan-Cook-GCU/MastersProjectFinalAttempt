@@ -119,4 +119,37 @@ namespace BetterYouApi.Models
         public virtual Group Group { get; set; }
         public virtual User User { get; set; }
     }
+    public class Conversation
+    {
+        [Key]
+        public int ConversationId { get; set; }
+        public DateTime StartedAt { get; set; }
+
+        [ForeignKey("User1")]
+        public int User1Id { get; set; }
+        public virtual User User1 { get; set; }
+
+        [ForeignKey("User2")]
+        public int User2Id { get; set; }
+        public virtual User User2 { get; set; }
+
+        public virtual ICollection<ConversationMessage> Messages { get; set; }
+    }
+
+    public class ConversationMessage
+    {
+        [Key]
+        public int MessageId { get; set; }
+
+        [ForeignKey("Conversation")]
+        public int ConversationId { get; set; }
+        public virtual Conversation Conversation { get; set; }
+
+        [ForeignKey("Sender")]
+        public int SenderId { get; set; }
+        public virtual User Sender { get; set; }
+
+        public string Content { get; set; }
+        public DateTime SentAt { get; set; }
+    }
 }

@@ -236,6 +236,7 @@
     <Compile Include="Attributes\AuthorizeByEnvironmentAttribute.cs" />
     <Compile Include="ChatHub.cs" />
     <Compile Include="Configuration\SwaggerConfig.cs" />
+    <Compile Include="Controllers\ConversationController.cs" />
     <Compile Include="Controllers\FieldController.cs" />
     <Compile Include="Controllers\GroupChatController.cs" />
     <Compile Include="Controllers\MetricDataController.cs" />
@@ -270,6 +271,10 @@
     <Compile Include="Migrations\202407120135496_add group chat messaging.cs" />
     <Compile Include="Migrations\202407120135496_add group chat messaging.Designer.cs">
       <DependentUpon>202407120135496_add group chat messaging.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202407121939125_add conversations.cs" />
+    <Compile Include="Migrations\202407121939125_add conversations.Designer.cs">
+      <DependentUpon>202407121939125_add conversations.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DTOs.cs" />
@@ -310,6 +315,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202407120135496_add group chat messaging.resx">
       <DependentUpon>202407120135496_add group chat messaging.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407121939125_add conversations.resx">
+      <DependentUpon>202407121939125_add conversations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

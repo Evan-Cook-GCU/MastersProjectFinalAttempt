@@ -30,7 +30,9 @@ export class UserService {
   getLoggedInUserId(): number | null {
     return localStorage.getItem('loggedInUserId') ? parseInt(localStorage.getItem('loggedInUserId')!) : null;
   }
-  
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${baseUrl}api/users`);
+  }
   LogOut(): void {
     this.storageService.removeStorage('loggedInUser');
     this.storageService.removeStorage('loggedInUserId');

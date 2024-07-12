@@ -1,0 +1,15 @@
+<div class="conversations">
+    <h2>Conversations</h2>
+    <input [(ngModel)]="searchTerm" placeholder="Search users" />
+    <ul>
+      <li *ngFor="let user of searchUsers()">
+        <button (click)="startConversation(user)">{{ user.userName }}</button>
+      </li>
+    </ul>
+    <p-accordion *ngFor="let conversation of conversations">
+      <p-accordionTab [header]="getUser(conversation).userName">
+        <app-messaging [conversation]="conversation"></app-messaging>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+  
