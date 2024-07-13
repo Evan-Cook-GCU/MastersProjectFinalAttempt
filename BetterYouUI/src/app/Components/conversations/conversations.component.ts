@@ -17,9 +17,7 @@ import { AccordionModule } from 'primeng/accordion';;
   styleUrl: './conversations.component.scss'
 })
 export class ConversationsComponent {
-getUser(conversation: Conversation):User {
-  return this.users.find(user=>user.userId== conversation.user2Id)||{userName: 'Unknown User', userId: -1, email: '', passwordHash: '', createdAt: new Date()};
-}
+
 
   public users: User[] = [];
   public selectedUser: User | null = null;
@@ -35,7 +33,17 @@ getUser(conversation: Conversation):User {
   ngOnInit(): void {
     this.loggedInUser = this.userService.getLoggedInUser();
     this.loadUsers();
+    this.loadConversations();
   }
+  loadConversations() {
+    if (this.loggedInUser) {
+      this.conversationService
+        .getUsersConversations(this.loggedInUser.userId)
+        .subscribe((conversations) => {
+          this.conversations = conversations;
+        });
+      }
+   }
 
   loadUsers(): void {
     // Replace with actual service call to get users
@@ -53,8 +61,24 @@ getUser(conversation: Conversation):User {
         });
     }
   }
-
-  searchUsers(): User[] {
-    return this.users.filter(user => user.userName.toLowerCase().includes(this.searchTerm.toLowerCase()));
+  getUser(conversation: Conversation):User {
+    if(this.loggedInUser) {
+    return this.users.find((user) => 
+      (user.userId === conversation.user2Id || user.userId === conversation.user1Id) && user.userId!=this.loggedInUser?.userId) 
+      ?? {userName: 'Unknown User', userId: -1, email: '', passwordHash: '', createdAt: new Date()};
   }
+  else {
+    return {userName: 'Unknown User', userId: -1, email: '', passwordHash: '', createdAt: new Date()};
+        }
+      }
+  
+      searchUsers(): User[] {
+        const conversationUserIds = this.conversations.map(conversation =>
+          conversation.user1Id === this.loggedInUser?.userId ? conversation.user2Id : conversation.user1Id
+        );
+        return this.users.filter(user =>
+          user.userName.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
+          !conversationUserIds.includes(user.userId)&& user.userId!=this.loggedInUser?.userId
+        );
+      }
 }

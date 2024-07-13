@@ -69,7 +69,7 @@ export interface Conversation {
 export interface Message {
     messageId?: number;
     conversationId: number;
-    senderId: number;
+    senderId: string;
     content: string;
     sentAt: Date;
 }

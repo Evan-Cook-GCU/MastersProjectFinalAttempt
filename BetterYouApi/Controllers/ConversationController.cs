@@ -11,11 +11,12 @@ namespace BetterYouApi.Controllers
     public class ConversationController : ApiController
     {
         private BetterYouContext context = new BetterYouContext();
-
         [HttpGet]
         [Route("{userId1:int}/{userId2:int}")]
         public IHttpActionResult GetConversation(int userId1, int userId2)
         {
+            var test = context.Conversations.ToList();
+
             var conversation = context.Conversations
                 .Include("Messages")
                 .FirstOrDefault(c => (c.User1Id == userId1 && c.User2Id == userId2) || (c.User1Id == userId2 && c.User2Id == userId1));
@@ -36,8 +37,25 @@ namespace BetterYouApi.Controllers
             return Ok(MappingProfile.ToDTO(conversation));
         }
 
-       
 
-        
+        [HttpGet]
+        [Route("{userId:int}")]
+        public IHttpActionResult GetUsersConversations(int userId)
+        {
+            var test = context.Conversations.ToList();
+
+            var conversation = context.Conversations
+                .Include("Messages")
+                .Where(c => c.User1Id == userId || c.User2Id == userId).ToList();
+
+
+            if (conversation == null)
+            {
+                return Ok(new List<ConversationDTO>());
+            }
+            return Ok(conversation.Select(MappingProfile.ToDTO).ToList());
+        }
+
+
     }
 }

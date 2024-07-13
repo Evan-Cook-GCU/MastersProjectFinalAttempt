@@ -2,7 +2,7 @@
     <h2>Chat</h2>
     <div class="messages-container" #messagesContainer>
       <div *ngFor="let msg of messages">
-        <strong>{{ getUserById(msg.senderId)?.userName }}:</strong>
+        <strong>{{ (msg.senderId) }}:</strong>
         <span class="message-text">{{ msg.content }}</span>
       </div>
     </div>

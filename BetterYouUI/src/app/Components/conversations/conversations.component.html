@@ -1,6 +1,7 @@
 <div class="conversations">
     <h2>Conversations</h2>
     <input [(ngModel)]="searchTerm" placeholder="Search users" />
+    <button (click)="searchUsers()">Search</button>
     <ul>
       <li *ngFor="let user of searchUsers()">
         <button (click)="startConversation(user)">{{ user.userName }}</button>

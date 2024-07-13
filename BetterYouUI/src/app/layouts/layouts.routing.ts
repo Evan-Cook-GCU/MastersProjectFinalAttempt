@@ -14,6 +14,10 @@ export const layoutRoutes: Routes = [
     path: 'group-search',
     loadComponent: () => import('./group-search/group-search.component').then(c => c.GroupSearchComponent)
   },
+  {
+    path: 'Conversations',
+    loadComponent: () => import('../Components/conversations/conversations.component').then(c => c.ConversationsComponent)
+  },
   // {
   //   path: 'layout-2',
   //   loadComponent: () => import('./layout2/layout2.component').then(c => c.Layout2Component)

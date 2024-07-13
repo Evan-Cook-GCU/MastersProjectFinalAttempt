@@ -7,6 +7,7 @@ namespace BetterYouApi.Mappings
 {
     public class MappingProfile
     {
+        
         public static UserDTO ToDTO(User user)
         {
             return new UserDTO
@@ -177,14 +178,23 @@ namespace BetterYouApi.Mappings
         }
         public static ConversationDTO ToDTO(Conversation conversation)
         {
-            return new ConversationDTO
+            var conversationDto= new ConversationDTO
             {
                 ConversationId = conversation.ConversationId,
                 StartedAt = conversation.StartedAt,
                 User1Id = conversation.User1Id,
                 User2Id = conversation.User2Id,
-                Messages = conversation.Messages.Select(ToDTO).ToList()
+                
             };
+            if(conversation.Messages!=null)
+            {
+                conversationDto.Messages = conversation.Messages.Select(ToDTO).ToList();
+            }
+            else
+            {
+                conversationDto.Messages = new List<ConversationMessageDTO>();
+            }
+            return conversationDto;
         }
 
         public static Conversation ToModel(ConversationDTO conversationDto)
@@ -201,11 +211,12 @@ namespace BetterYouApi.Mappings
 
         public static ConversationMessageDTO ToDTO(ConversationMessage message)
         {
+             BetterYouContext context = new BetterYouContext();
             return new ConversationMessageDTO
             {
                 MessageId = message.MessageId,
                 ConversationId = message.ConversationId,
-                SenderId = message.SenderId,
+                SenderId = context.Users.FirstOrDefault(u => u.UserId == message.SenderId).UserName,
                 Content = message.Content,
                 SentAt = message.SentAt
             };
@@ -213,11 +224,13 @@ namespace BetterYouApi.Mappings
 
         public static ConversationMessage ToModel(ConversationMessageDTO messageDto)
         {
+
+            BetterYouContext context = new BetterYouContext();
             return new ConversationMessage
             {
                 MessageId = messageDto.MessageId,
                 ConversationId = messageDto.ConversationId,
-                SenderId = messageDto.SenderId,
+                SenderId = context.Users.FirstOrDefault(u => u.UserName == messageDto.SenderId).UserId,
                 Content = messageDto.Content,
                 SentAt = messageDto.SentAt
             };

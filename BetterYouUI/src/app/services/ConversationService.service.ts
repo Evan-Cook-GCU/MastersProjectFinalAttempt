@@ -26,7 +26,7 @@ export class ConversationService {
     this.proxy.on('broadcastConversationMessage', (conversationId: number, user: string, message: string) => {
       const msg: Message = {
         conversationId,
-        senderId: parseInt(user), // Assuming user is userId
+        senderId: user, // Assuming user is userId
         content: message,
         sentAt: new Date()
       };
@@ -43,6 +43,9 @@ export class ConversationService {
       .fail((error: any) => console.error('Invocation failed. Error: ', error));
   }
   public getConversation(userId1: number, userId2: number): Observable<Conversation> {
-    return this.http.get<Conversation>(`http://localhost:44060/api/conversations/${userId1}/${userId2}`);
+    return this.http.get<Conversation>(`http://localhost:44060/api/conversations/${userId1}/${userId2}/`);
+  }
+  public getUsersConversations(userId1: number): Observable<Conversation[]> {
+    return this.http.get<Conversation[]>(`http://localhost:44060/api/conversations/${userId1}/`);
   }
 }

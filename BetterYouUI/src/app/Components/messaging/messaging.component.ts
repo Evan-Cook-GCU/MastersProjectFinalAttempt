@@ -16,11 +16,12 @@ import { ConversationService } from '../../services/ConversationService.service'
   styleUrl: './messaging.component.scss'
 })
 export class MessagingComponent {
+
   @Input() conversation!: Conversation;
   public user!: User | null;
   public message: string = '';
   public messages: Message[] = [];
-
+  public user2: User | null = null;
   constructor(
     private conversationService: ConversationService,
     private userService: UserService
@@ -34,7 +35,19 @@ export class MessagingComponent {
 
   updateConversation(): void {
     if (this.conversation) {
+      //populate the user
       this.user = this.userService.getLoggedInUser();
+      //if the logged in user is user1 on conversation, get user2
+      if(this.conversation.user1Id === this.user?.userId){
+        this.userService.getUsers().subscribe((users) => {
+          this.user2 = users.find(user => user.userId == this.conversation.user2Id)||{userName: 'Unknown User', userId: -1, email: '', passwordHash: '', createdAt: new Date()};
+        });
+        //if the logged in user is user2 on conversation, get user1
+      }else if(this.conversation.user2Id === this.user?.userId){
+        this.userService.getUsers().subscribe((users) => {
+          this.user2 = users.find(user => user.userId == this.conversation.user1Id)||{userName: 'Unknown User', userId: -1, email: '', passwordHash: '', createdAt: new Date()};
+        });
+      }
       this.messages = this.conversation.messages;
       this.conversationService.messageReceived$.subscribe((msg) => {
         if (msg.conversationId === this.conversation.conversationId) {
@@ -49,5 +62,13 @@ export class MessagingComponent {
       this.conversationService.sendMessage(this.conversation.conversationId, this.user.userId, this.message);
       this.message = '';
     }
+  }
+  getUserById(messageUserId: string): User {
+    if(messageUserId === this.user?.userId.toString()){
+      return this.user;
+    }else if(messageUserId === this.user2?.userId.toString()){
+      return this.user2;
+    }
+    return {userName: 'Unknown User', userId: -1, email: '', passwordHash: '', createdAt: new Date()};
   }
 }
