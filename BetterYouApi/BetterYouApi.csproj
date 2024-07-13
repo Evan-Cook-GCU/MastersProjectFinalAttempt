@@ -229,6 +229,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="DockerFile" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

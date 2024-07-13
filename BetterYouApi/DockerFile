@@ -1,0 +1,28 @@
+﻿# Use the .NET Framework 4.8 SDK as the base image
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8 AS build
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the project files
+COPY BetterYouApi/ .
+
+# Restore NuGet packages
+RUN nuget restore
+
+# Build the application
+RUN msbuild /p:Configuration=Release
+
+# Use the .NET Framework 4.8 runtime as the final image
+FROM mcr.microsoft.com/dotnet/framework/aspnet:4.8
+
+# Set the working directory
+WORKDIR /inetpub/wwwroot
+
+# Copy the built app from the build image
+COPY --from=build /app/bin/Release .
+
+# Expose port 80
+EXPOSE 80
+
+# The entry point is automatically set to the IIS server
