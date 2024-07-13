@@ -49,5 +49,29 @@ export interface Data {
     label: string;
     value: number;
 }
+export interface GroupChatMessage {
+    chatMessageId: number;
+    groupId: number;
+    sender: string;
+    content: string;
+    sentAt: Date;
+  }
+  // conversation.model.ts
+export interface Conversation {
+    conversationId: number;
+    startedAt: Date;
+    user1Id: number;
+    user2Id: number;
+    messages: Message[];
+}
+
+// message.model.ts
+export interface Message {
+    messageId?: number;
+    conversationId: number;
+    senderId: string;
+    content: string;
+    sentAt: Date;
+}
 export const VALID_FIELD_TYPES: string[] = ['text', 'number', 'date', 'email', 'url', 'password', 'tel'];
 export const baseUrl = 'http://localhost:44060/';

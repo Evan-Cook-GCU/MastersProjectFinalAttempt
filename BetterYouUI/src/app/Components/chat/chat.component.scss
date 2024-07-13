@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.messages-container {
+  overflow-y: auto;
+  max-height: 400px; /* Adjust this value as needed */
+  padding: 10px;
+  box-sizing: border-box; /* Include padding in the element's total width and height */
+}
+
+.message-text {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  display: block;
+}

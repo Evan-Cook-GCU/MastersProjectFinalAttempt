@@ -7,6 +7,7 @@ namespace BetterYouApi.Mappings
 {
     public class MappingProfile
     {
+        
         public static UserDTO ToDTO(User user)
         {
             return new UserDTO
@@ -162,6 +163,76 @@ namespace BetterYouApi.Mappings
                 Label = dataDto.Label,
                 Value = dataDto.Value,
                 MetricDataId = dataDto.MetricDataId
+            };
+        }
+        public static GroupChatMessageDTO ToDTO(GroupChatMessage message)
+        {
+            return new GroupChatMessageDTO
+            {
+                ChatMessageId = message.ChatMessageId,
+                GroupId = message.GroupId,
+                Sender = message.User.UserName,
+                Content = message.Content,
+                SentAt = message.SentAt
+            };
+        }
+        public static ConversationDTO ToDTO(Conversation conversation)
+        {
+            var conversationDto= new ConversationDTO
+            {
+                ConversationId = conversation.ConversationId,
+                StartedAt = conversation.StartedAt,
+                User1Id = conversation.User1Id,
+                User2Id = conversation.User2Id,
+                
+            };
+            if(conversation.Messages!=null)
+            {
+                conversationDto.Messages = conversation.Messages.Select(ToDTO).ToList();
+            }
+            else
+            {
+                conversationDto.Messages = new List<ConversationMessageDTO>();
+            }
+            return conversationDto;
+        }
+
+        public static Conversation ToModel(ConversationDTO conversationDto)
+        {
+            return new Conversation
+            {
+                ConversationId = conversationDto.ConversationId,
+                StartedAt = conversationDto.StartedAt,
+                User1Id = conversationDto.User1Id,
+                User2Id = conversationDto.User2Id,
+                Messages = conversationDto.Messages.Select(ToModel).ToList()
+            };
+        }
+
+        public static ConversationMessageDTO ToDTO(ConversationMessage message)
+        {
+             BetterYouContext context = new BetterYouContext();
+            return new ConversationMessageDTO
+            {
+                MessageId = message.MessageId,
+                ConversationId = message.ConversationId,
+                SenderId = context.Users.FirstOrDefault(u => u.UserId == message.SenderId).UserName,
+                Content = message.Content,
+                SentAt = message.SentAt
+            };
+        }
+
+        public static ConversationMessage ToModel(ConversationMessageDTO messageDto)
+        {
+
+            BetterYouContext context = new BetterYouContext();
+            return new ConversationMessage
+            {
+                MessageId = messageDto.MessageId,
+                ConversationId = messageDto.ConversationId,
+                SenderId = context.Users.FirstOrDefault(u => u.UserName == messageDto.SenderId).UserId,
+                Content = messageDto.Content,
+                SentAt = messageDto.SentAt
             };
         }
     }

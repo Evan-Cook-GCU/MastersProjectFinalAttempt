@@ -13,6 +13,8 @@ using BetterYouApi;
 using BetterYouApi.Configuration;
 using BetterYouApi.Filters;
 using BetterYouApi.Logging;
+using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Infrastructure;
 
 [assembly: OwinStartup(typeof(Startup))]
 
@@ -74,7 +76,24 @@ namespace BetterYouApi
 
                 // Enable CORS
                 app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+                app.Map("/signalr", map =>
+                {
+                    // Setup the CORS middleware to run before SignalR.
+                    // By default this will allow all origins. You can 
+                    // configure the set of origins and/or http verbs by
+                    // providing a cors options with a different policy.
+                    map.UseCors(CorsOptions.AllowAll);
+                    var hubConfiguration = new HubConfiguration
+                    {
+                        EnableDetailedErrors = true,
 
+                    };
+
+                    map.RunSignalR(hubConfiguration);
+                    GlobalHost.Configuration.MaxIncomingWebSocketMessageSize = null;
+
+                });
+                app.MapSignalR();
                 //ConfigureDiagnosticsTracingForWebapi(config);
                 ConfigureSerialization(config);
                 config.MapHttpAttributeRoutes();

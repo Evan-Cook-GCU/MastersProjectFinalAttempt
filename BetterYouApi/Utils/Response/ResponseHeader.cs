@@ -17,6 +17,6 @@
         public const string DocumentationUri = "X-Uri-Documentation";
 
         public const string MqCorrelationId = "X-Correlation-Id";
-        public const string MqMessageId = "X-Message-Id";
+        public const string MqMessageId = "X-ConversationMessage-Id";
     }
 }
