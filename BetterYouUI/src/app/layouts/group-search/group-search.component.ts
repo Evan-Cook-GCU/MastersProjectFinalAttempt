@@ -18,8 +18,8 @@ import { UserService } from '../../services/DataServices/user.service';
   styleUrl: './group-search.component.scss'
 })
 export class GroupSearchComponent  implements OnInit {
-  groups: Group[] = [];
-  filteredGroups: Group[] = [];
+  groups: any[] = [];
+  filteredGroups: any[] = [];
   userId: number | null = null;
 
   constructor(

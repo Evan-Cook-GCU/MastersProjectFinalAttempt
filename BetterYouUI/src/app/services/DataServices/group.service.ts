@@ -11,8 +11,8 @@ export class GroupService {
 
   constructor(private http: HttpClient) { }
 
-  getGroups(): Observable<Group[]> {
-    return this.http.get<Group[]>(baseUrl + 'api/groups');
+  getGroups(): Observable<any> {
+    return this.http.get<any>(`${baseUrl}api/groups`);
   }
   
   getGroupById(groupId: number): Observable<Group> {
