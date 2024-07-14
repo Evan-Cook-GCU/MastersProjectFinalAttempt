@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -151,6 +152,29 @@ namespace BetterYouApi.Controllers
         {
             // Replace with your token generation logic
             return "dummy-token";
+        }
+        [HttpGet]
+        [Route("user/{userId:int}/group/{groupId:int}")]
+        public IHttpActionResult GetMetricDataByUserIdAndGroupId(int userId, int groupId)
+        {
+            var memberships = context.GroupMemberships.Where(gm => gm.UserId == userId && gm.GroupId == groupId).ToList();
+            if (!memberships.Any())
+            {
+                return NotFound();
+            }
+
+            var metricDataList = new List<MetricDataDTO>();
+
+            foreach (var membership in memberships)
+            {
+                var metricData = context.MetricDatas.Where(md => md.GroupMembershipId == membership.MembershipId).ToList();
+                foreach (var data in metricData)
+                {
+                    metricDataList.Add(MappingProfile.ToDTO(data));
+                }
+            }
+
+            return Ok(metricDataList);
         }
     }
 
