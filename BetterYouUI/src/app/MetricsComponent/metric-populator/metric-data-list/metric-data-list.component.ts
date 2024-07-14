@@ -9,6 +9,7 @@ import { Metric, MetricData } from '../../../Models/Models';
 import { MetricService } from '../../../services/DataServices/metric.service';
 import { UserService } from '../../../services/DataServices/user.service';
 import { MetricDataService } from '../../../services/DataServices/metric-data.service';
+import { ReportGeneratorService } from '../../../services/Report-generator/report-generator.service';
 
 @Component({
   selector: 'app-metric-data-list',
@@ -20,12 +21,14 @@ import { MetricDataService } from '../../../services/DataServices/metric-data.se
   styleUrl: './metric-data-list.component.scss'
 })
 export class MetricDataListComponent {
+
   @Input() metricId: number | undefined;
   metricDataList: any[] = [];
   labels: string[] = [];
   constructor(private metricService: MetricService,
     private userService: UserService,
     private metricDataService: MetricDataService,
+    private reportGeneratorService: ReportGeneratorService,
   ) {
   }
   update() {
@@ -70,5 +73,8 @@ export class MetricDataListComponent {
       });
     }
   }
+  PrintReport() {
+    this.reportGeneratorService.exportToExcel(this.metricDataList, this.labels, 'Report');
+    }
 }
 
