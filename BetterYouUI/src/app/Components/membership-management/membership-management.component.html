@@ -27,6 +27,6 @@
     </div>
     <p-footer>
         <button pButton type="button" label="No" icon="pi pi-times" (click)="cancelBan()"></button>
-        <button pButton type="button" label="Yes" icon="pi pi-check" (click)="confirmBan()"></button>
+        <button *ngIf="banReason.length > 0" pButton type="button" label="Yes" icon="pi pi-check" (click)="confirmBan()"></button>
     </p-footer>
 </p-dialog>

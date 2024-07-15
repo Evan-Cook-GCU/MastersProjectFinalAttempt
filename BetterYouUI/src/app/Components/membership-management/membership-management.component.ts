@@ -91,22 +91,29 @@ export class MembershipManagementComponent {
       if (membership) {
         // Log the ban reason somewhere if necessary
         console.log(`Banning user: ${this.selectedMember.userName}, Reason: ${this.banReason}`);
-        this.membershipService.deleteGroupMembership(membership.membershipId).subscribe(() => this.updateGroup());
+        if (this.banReason.length > 0) {
+          this.membershipService.deleteGroupMembership(membership.membershipId).subscribe(() => {
+            if (this.loggedInUser && this.selectedMember) {
+              this.conversationService
+                .getConversation(this.loggedInUser.userId, this.selectedMember.userId)
+                .subscribe((conversation) => {
+                  if (this.loggedInUser) {
+                    this.conversationService.sendMessage(conversation.conversationId, this.loggedInUser.userId, `You have been banned from the group ${this.group?.groupName} for the following reason: ${this.banReason}`);
+                    this.displayBanDialog = false;
+                    this.selectedMember = null;
+                    this.banReason = '';
+                    this.updateGroup()
+                  }
+                });
+            }
+          }
+          );
 
-        if (this.loggedInUser) {
-          this.conversationService
-            .getConversation(this.loggedInUser.userId, this.selectedMember.userId)
-            .subscribe((conversation) => {
-              if (this.loggedInUser) {
-              this.conversationService.sendMessage(conversation.conversationId, this.loggedInUser.userId, `You have been banned from the group ${this.group?.groupName} for the following reason: ${this.banReason}`);
-              }
-            });
+
         }
       }
     }
-    this.displayBanDialog = false;
-    this.selectedMember = null;
-    this.banReason = '';
+
   }
 
 
