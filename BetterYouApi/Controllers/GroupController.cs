@@ -12,13 +12,23 @@ namespace BetterYouApi.Controllers
     {
         private BetterYouContext context = new BetterYouContext();
 
+        // GroupController.cs
+
         [HttpGet]
         [Route("")]
         public IHttpActionResult GetAll()
         {
-            var groups = context.Groups.ToList().Select(MappingProfile.ToDTO);
+            var groups = context.Groups.ToList().Select(group => new
+            {
+                group.GroupId,
+                group.GroupName,
+                group.Description,
+                group.CreatedAt,
+                MemberCount = context.GroupMemberships.Count(m => m.GroupId == group.GroupId)
+            });
             return Ok(groups);
         }
+
 
         [HttpGet]
         [Route("{id:int}")]

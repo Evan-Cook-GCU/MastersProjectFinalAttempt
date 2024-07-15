@@ -1,3 +1,4 @@
+<!-- group-search.component.html -->
 <h2>Group Search</h2>
 <input pInputText placeholder="Search" (input)="onSearch($event)">
 <p-table [value]="filteredGroups" [paginator]="true" [rows]="10">
@@ -6,6 +7,7 @@
       <th pSortableColumn="groupName">Name <p-sortIcon field="groupName"></p-sortIcon></th>
       <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
       <th pSortableColumn="createdAt">Created At <p-sortIcon field="createdAt"></p-sortIcon></th>
+      <th pSortableColumn="memberCount">Members <p-sortIcon field="memberCount"></p-sortIcon></th>
       <th>Actions</th>
     </tr>
   </ng-template>
@@ -14,6 +16,7 @@
       <td>{{ group.groupName }}</td>
       <td>{{ group.description }}</td>
       <td>{{ group.createdAt | date: 'short' }}</td>
+      <td>{{ group.memberCount }}</td>
       <td>
         <button pButton type="button" label="View" (click)="onViewGroup(group)"></button>
       </td>
