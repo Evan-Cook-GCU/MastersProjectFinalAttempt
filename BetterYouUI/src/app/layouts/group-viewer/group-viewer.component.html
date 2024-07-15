@@ -1,4 +1,5 @@
-<div class="page container-fluid">
+<div class="page container-fluid"
+*ngIf="membershipsLoaded&&loggedInUser&&!membership?.isBanned" >
     <h2 class="text-center">
     {{ group?.groupName }}
     <button 
@@ -54,8 +55,10 @@
         </div>
       </div>
       <div class="col-md-2 my-2 order-md-3">
-        <div class="column" style="background-color: #c9bfdf !important;height:100vh;"><app-chat [group]="group"></app-chat></div>
+        <div class="column" style="background-color: #c9bfdf !important;height:100vh;" *ngIf="membershipsLoaded&&loggedInUser&&!membership?.isBanned"><app-chat [group]="group"></app-chat></div>
     </div>
     </div>
   </div>
-  
+  <div *ngIf="membershipsLoaded&&membership?.isBanned" class="alert alert-danger" role="alert">
+    You have been banned from this group.
+  </div>

@@ -32,6 +32,7 @@ namespace BetterYouApi.Models
         public int UserId { get; set; }
         public int GroupId { get; set; }
         public bool IsAdmin { get; set; }
+        public bool IsBanned { get; set; }
         public DateTime JoinedAt { get; set; }
 
     }

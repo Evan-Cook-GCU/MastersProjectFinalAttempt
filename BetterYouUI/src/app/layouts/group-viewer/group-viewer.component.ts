@@ -133,6 +133,7 @@ export class GroupViewerComponent implements OnInit {
           userId: this.loggedInUser.userId,
           groupId: this.group.groupId,
           isAdmin: false,
+          isBanned: false,
           joinedAt: new Date(),
           metricData: []
         };
