@@ -3,8 +3,10 @@ import { User, Group, GroupMembership, baseUrl } from '../../Models/Models';
 import { GroupMembershipService } from './group-membership.service';
 import { GroupService } from './group.service';
 import { StorageService } from '../storage/storage.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 export interface LoginDTO {
   userName: string;
   password: string;
@@ -62,7 +64,26 @@ export class UserService {
   
     createUser(user: User): Observable<User> {
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-      return this.http.post<User>(baseUrl + 'api/users', user, { headers });
+      return this.http.post<User>(`${baseUrl}api/users`, user, { headers }).pipe(
+        catchError(this.handleError)
+      );
+    }
+  
+    private handleError(error: HttpErrorResponse) {
+      let errorMessage = 'An unknown error occurred!';
+      if (error.error instanceof ErrorEvent) {
+        // Client-side error
+        errorMessage = `Error: ${error.error.message}`;
+      } else {
+        // Server-side error
+        if (error.status === 409) {
+          errorMessage = `Conflict: ${error.error}`;
+        } else {
+          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        }
+      }
+      alert(errorMessage);
+      return throwError(errorMessage);
     }
   
   addGroup(group: Group, userId: number): void {

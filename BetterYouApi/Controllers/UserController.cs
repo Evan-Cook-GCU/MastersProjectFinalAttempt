@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Http;
+using System.Net; // Add this line at the top of your file
 using BetterYouApi.Mappings;
 using BetterYouApi.Models;
 
@@ -38,6 +39,14 @@ namespace BetterYouApi.Controllers
         [Route("")]
         public IHttpActionResult Create(UserDTO userDto)
         {
+            if (context.Users.Any(u => u.UserName == userDto.UserName))
+            {
+                return Content(HttpStatusCode.Conflict, "Username already exists.");
+            }
+            if (context.Users.Any(u => u.Email == userDto.Email))
+            {
+                return Content(HttpStatusCode.Conflict, "Email already exists.");
+            }
             var user = MappingProfile.ToModel(userDto);
             user.CreatedAt = DateTime.Now;
             context.Users.Add(user);
