@@ -69,7 +69,7 @@ namespace BetterYouApi.Controllers
             {
                 return NotFound();
             }
-            context.GroupMemberships.Remove(membership);
+            membership.IsBanned = true;
             context.SaveChanges();
             return Ok();
         }

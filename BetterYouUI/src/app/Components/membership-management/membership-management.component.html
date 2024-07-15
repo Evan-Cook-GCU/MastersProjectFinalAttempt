@@ -6,13 +6,27 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-member>
-        <tr>
+        <tr *ngIf="!isBanned(member)">
             <td>{{ member.userName }}</td>
             <td *ngIf="membershipsLoaded">
                 <button *ngIf="!isAdmin(member)" pButton type="button" icon="pi pi-check" class="p-button-success" (click)="makeAdmin(member)">Make Admin</button>
                 <button *ngIf="isAdmin(member)" pButton type="button" icon="pi pi-exclamation-triangle" class="p-button-warning" (click)="removeAdminStatus(member)">Remove Admin</button>
-                <button pButton type="button" icon="pi pi-times" class="p-button-danger" (click)="removeMember(member)">Ban Memeber</button>
+                <button pButton *ngIf="!isBanned(member)" type="button" icon="pi pi-times" class="p-button-danger" (click)="showBanDialog(member)">Ban Member</button>
             </td>
         </tr>
     </ng-template>
 </p-table>
+<p-dialog header="Confirm Ban" [(visible)]="displayBanDialog" [modal]="true" [closable]="false" [style]="{width: '300px'}">
+    <div class="confirmation-content">
+        <span class="pi pi-exclamation-triangle" style="font-size: 2rem; margin-right: 1rem;"></span>
+        <span>Are you sure you want to ban {{ selectedMember?.userName }}?</span>
+    </div>
+    <div class="p-field">
+        <label for="banReason">Reason:</label>
+        <input type="text" id="banReason" [(ngModel)]="banReason" class="p-inputtext p-component">
+    </div>
+    <p-footer>
+        <button pButton type="button" label="No" icon="pi pi-times" (click)="cancelBan()"></button>
+        <button pButton type="button" label="Yes" icon="pi pi-check" (click)="confirmBan()"></button>
+    </p-footer>
+</p-dialog>

@@ -62,6 +62,7 @@ namespace BetterYouApi.Mappings
                 UserId = membership.UserId,
                 GroupId = membership.GroupId,
                 IsAdmin = membership.IsAdmin,
+                IsBanned= membership.IsBanned,
                 JoinedAt = membership.JoinedAt
             };
         }
@@ -74,6 +75,7 @@ namespace BetterYouApi.Mappings
                 UserId = membershipDto.UserId,
                 GroupId = membershipDto.GroupId,
                 IsAdmin = membershipDto.IsAdmin,
+                IsBanned = membershipDto.IsBanned,
                 JoinedAt = membershipDto.JoinedAt
             };
         }

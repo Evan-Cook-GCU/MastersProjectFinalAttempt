@@ -21,6 +21,7 @@ export interface GroupMembership {
     userId: number;
     groupId: number;
     isAdmin: boolean;
+    isBanned: boolean;
     joinedAt: Date;
     metricData: MetricData[]; // Added relationship
 }

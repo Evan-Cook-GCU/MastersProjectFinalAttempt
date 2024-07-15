@@ -276,6 +276,10 @@
     <Compile Include="Migrations\202407121939125_add conversations.Designer.cs">
       <DependentUpon>202407121939125_add conversations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202407150139239_add banned status.cs" />
+    <Compile Include="Migrations\202407150139239_add banned status.Designer.cs">
+      <DependentUpon>202407150139239_add banned status.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DTOs.cs" />
     <Compile Include="Models\Models.cs" />
@@ -318,6 +322,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202407121939125_add conversations.resx">
       <DependentUpon>202407121939125_add conversations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407150139239_add banned status.resx">
+      <DependentUpon>202407150139239_add banned status.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

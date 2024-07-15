@@ -39,6 +39,7 @@ namespace BetterYouApi.Models
         [ForeignKey("Group")]
         public int GroupId { get; set; }
         public bool IsAdmin { get; set; }
+        public bool IsBanned { get; set; }
         public DateTime JoinedAt { get; set; }
 
         public virtual User User { get; set; }
