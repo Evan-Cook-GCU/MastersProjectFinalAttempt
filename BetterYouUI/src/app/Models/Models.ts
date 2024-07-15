@@ -14,8 +14,15 @@ export interface Group {
     description: string;
     createdAt: Date;
     metrics: Metric[]; // Added relationship
+    
 }
+export interface ScreenElement{
+    screenElementId: number;
+    type: string;
+    configuration: string;
+    groupId: number;
 
+}
 export interface GroupMembership {
     membershipId: number;
     userId: number;
