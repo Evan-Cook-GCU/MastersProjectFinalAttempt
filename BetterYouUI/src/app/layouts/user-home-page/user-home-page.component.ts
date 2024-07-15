@@ -78,9 +78,14 @@ logOut() {
   }
   signup() {
     this.newUser.createdAt = new Date();
-    this.userService.createUser(this.newUser).subscribe(user => {
-      this.displaySignupDialog = false;
-      this.newUser = { userId: 0, userName: '', email: '', passwordHash: '', createdAt: new Date() };
+    this.userService.createUser(this.newUser).subscribe({
+      next: user => {
+        this.newUser = { userId: 0, userName: '', email: '', passwordHash: '', createdAt: new Date() };
+        this.displaySignupDialog= false;
+      },
+      error: error => {
+        this.displaySignupDialog= false;
+      }
     });
   }
   openGroupEditor(groupId: number) {
