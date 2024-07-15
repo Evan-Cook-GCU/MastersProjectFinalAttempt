@@ -1,13 +1,9 @@
 <div id="sidebar">
 
     <div id="menu">
-        <a href="#">Dashboard</a>
-        <a href="#">Users</a>
-        <a href="#">Projects</a>
-        <a href="#">Lists</a>
-        <a href="#">Documents</a>
-        <a href="#">Contacts</a>
-        <a href="#">Settings</a>
+        <a [routerLink]="['/user-home-page']" routerLinkActive="router-link-active"  class="nav-item nav-link  my-auto main" id="user-home-page">user-home-page</a> 
+                    <a [routerLink]="['/group-search']" routerLinkActive="router-link-active" class="nav-item nav-link my-auto main" id="group-search">Group Search</a>
+                    <a [routerLink]="['/Conversations']" routerLinkActive="router-link-active" class="nav-item nav-link my-auto main" id="Conversations">Conversations</a>
     </div>
 
 
