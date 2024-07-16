@@ -1,23 +1,34 @@
-﻿# Use the official .NET SDK image as a parent image
-FROM mcr.microsoft.com/dotnet/framework/sdk:4.8
-
-# Set the working directory
+﻿# Use the official image as a parent image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
+EXPOSE 80
 
-# Copy the project file
-COPY BetterYouApi/BetterYouApi.csproj /app/BetterYouApi/
+# 5.0.408 
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
 
-# Restore dependencies
-RUN nuget restore BetterYouApi/BetterYouApi.csproj
+# Copy the project file and restore any dependencies
+COPY ["BetterYouApi/BetterYouApi.csproj", "BetterYouApi/"]
+COPY . .
+RUN dotnet restore "BetterYouApi/BetterYouApi.csproj"
 
-# Copy the rest of the application code
-COPY BetterYouApi /app/BetterYouApi
+# RUN wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+#     && dpkg -i packages-microsoft-prod.deb \
+#     && rm packages-microsoft-prod.deb \
+#     && apt-get update \
+#     && apt-get install -y dotnet-sdk-5.0 \
+#     && dotnet build "BetterYouApi/BetterYouApi.csproj" -c Release -o /app/build
 
-# Set the working directory to the project directory
-WORKDIR /app/BetterYouApi
+# Copy the rest of the files and build the project
+# COPY . .
+# WORKDIR "/src/BetterYouApi"
+# CMD ["tail", "-f", "/dev/null"]
+RUN dotnet build "BetterYouApi/BetterYouApi.csproj" -c Release -o /app/build
+CMD ["tail", "-f", "/dev/null"]
+# FROM build AS publish
+# RUN dotnet publish "BetterYouApi.csproj" -c Release -o /app/publish
 
-# Build the application
-RUN msbuild BetterYouApi.csproj -p:Configuration=Release
-
-# Define the entry point for the container
-ENTRYPOINT ["BetterYouApi.exe"]
+# FROM base AS final
+# WORKDIR /app
+# COPY --from=publish /app/publish .
+# ENTRYPOINT ["dotnet", "BetterYouApi.dll"]
