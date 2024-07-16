@@ -239,6 +239,7 @@
     <Compile Include="Controllers\ConversationController.cs" />
     <Compile Include="Controllers\FieldController.cs" />
     <Compile Include="Controllers\GroupChatController.cs" />
+    <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\MetricDataController.cs" />
     <Compile Include="Controllers\MetricController.cs" />
     <Compile Include="Controllers\GroupMembershipController.cs" />

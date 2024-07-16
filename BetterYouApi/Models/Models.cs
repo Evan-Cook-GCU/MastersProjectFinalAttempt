@@ -163,4 +163,13 @@ namespace BetterYouApi.Models
         public string Content { get; set; }
         public DateTime SentAt { get; set; }
     }
+    public class Image
+    {
+        [Key]
+        public int ImageId { get; set; }
+        public string FileName { get; set; }
+        public byte [] FileContent { get; set; }
+        public DateTime UploadedAt { get; set; }
+
+    }
 }

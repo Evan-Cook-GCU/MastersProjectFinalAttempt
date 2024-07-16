@@ -2,10 +2,12 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { ChartConfiguration, ChartType, ChartEvent, registerables, Chart } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
-import { Metric, MetricData } from "../../Models/Models";
+import { GroupMembership, Metric, MetricData, User } from "../../Models/Models";
 import { MetricService } from "../../services/DataServices/metric.service";
 import { MetricDataService } from "../../services/DataServices/metric-data.service";
 import { Subscription } from "rxjs";
+import { UserService } from "../../services/DataServices/user.service";
+import { GroupMembershipService } from "../../services/DataServices/group-membership.service";
 
 Chart.register(...registerables);
 
@@ -19,46 +21,9 @@ Chart.register(...registerables);
 export class GraphComponent implements OnInit {
   @Input() metrics: Metric[] = [];
   @Input() selectedUserId: number | null = null;
-  public lineChartType: ChartType = 'line';
-  public lineChartData: ChartConfiguration['data'] = {
-    datasets: [],
-    labels: [],
-  };
-
-  public lineChartOptions: ChartConfiguration['options'] = {
-    elements: {
-      line: {
-        tension: 0.5,
-      },
-    },
-    scales: {
-      x: {
-        type: 'linear',
-        position: 'bottom',
-        ticks: {
-          callback: (value, index, values) => values[index].value,
-          color: 'red',
-        },
-      },
-      y: {
-        position: 'left',
-      },
-      y1: {
-        position: 'right',
-        grid: {
-          color: 'black',
-        },
-        ticks: {
-          color: 'blue',
-        },
-      },
-    },
-    plugins: {
-      legend: { display: true },
-    },
-  };
-
-
+  @Input() configuration:string=''
+  loggedInUser:User|null=null;
+  loggedInUserMemebership:GroupMembership|null=null;
   private eventSubscription: Subscription;
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   selectedXMetric: Metric | null = null;
@@ -66,10 +31,14 @@ export class GraphComponent implements OnInit {
   xField: string | undefined;
   yField: string | undefined;
   public tableData: { label: any, value: number }[] = [];
-  constructor(private metricService: MetricService,
-    private metricDataService: MetricDataService
-  ) {
 
+
+  constructor(private metricService: MetricService,
+    private metricDataService: MetricDataService,
+    private userService:UserService,
+    private memebershipService:GroupMembershipService
+  ) {
+    this.loggedInUser= this.userService.getLoggedInUser();
     this.eventSubscription = this.metricDataService.event$.subscribe(() => {
       this.updateMetrics();
     });
@@ -90,17 +59,54 @@ export class GraphComponent implements OnInit {
     }
   })
 }
+ parseConfiguration(): void {
+  if (!this.configuration) return;
+
+  const [xMetricId, xField, yMetricId, yField] = this.configuration.split('|');
+
+  this.selectedXMetric = this.metrics.find(m => m.metricId.toString() === xMetricId) || null;
+  this.xField = xField || undefined;
+  this.selectedYMetric = this.metrics.find(m => m.metricId.toString() === yMetricId) || null;
+  this.yField = yField || undefined;
+
+  this.updateChart();
+}
+ getConfiguration()  {
+  const xMetricId = this.selectedXMetric?.metricId.toString() || '';
+  const yMetricId = this.selectedYMetric?.metricId.toString() || '';
+  this.configuration= `${xMetricId}|${this.xField || ''}|${yMetricId}|${this.yField || ''}`;
+}
+
+  
   ngOnInit(): void {
     this.loadMetricFields();
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['metrics']) {
+      if(this.loggedInUser&&this.metrics&&this.metrics[0]){
+      this.memebershipService.getMembership(this.loggedInUser?.userId, this.metrics[0].groupId).subscribe(data=>{
+        this.loggedInUserMemebership=data;
+      })
+    }
+
       this.loadMetricFields();
+
     } if (changes['selectedUserId']) {
       this.loadMetricFields();
     }
+    if(changes['configuration'])
+    {
+      this.parseConfiguration();
+      this.loadMetricFields()
+    }
   }
-
+isAdmin():boolean{
+  if(this.loggedInUserMemebership&&this.loggedInUserMemebership.isAdmin){
+    return true;
+  }else{
+  return false;
+  }
+}
   private loadMetricFields(): void {
     this.metrics.forEach(metric => {
       this.metricService.getMetricFields(metric.metricId).subscribe(fields => {
@@ -153,6 +159,7 @@ export class GraphComponent implements OnInit {
   private updateChart(): void {
     if (!this.canUpdateChart()) return;
 
+    this.getConfiguration();
     const xData = this.getXData();
     const yData = this.getYData();
     const xLabels = this.getXLabels(xData);
@@ -351,11 +358,57 @@ export class GraphComponent implements OnInit {
     };
   }
 
-  public chartClicked({ event, active }: { event?: ChartEvent; active?: object[]; }): void {
-    // console.log(event, active);
-  }
 
-  public chartHovered({ event, active }: { event?: ChartEvent; active?: object[]; }): void {
-    // console.log(event, active);
-  }
+
+
+
+
+
+
+
+
+
+
+
+    
+  public lineChartType: ChartType = 'line';
+  public lineChartData: ChartConfiguration['data'] = {
+    datasets: [],
+    labels: [],
+  };
+
+  public lineChartOptions: ChartConfiguration['options'] = {
+    elements: {
+      line: {
+        tension: 0.5,
+      },
+    },
+    scales: {
+      x: {
+        type: 'linear',
+        position: 'bottom',
+        ticks: {
+          callback: (value, index, values) => values[index].value,
+          color: 'red',
+        },
+      },
+      y: {
+        position: 'left',
+      },
+      y1: {
+        position: 'right',
+        grid: {
+          color: 'black',
+        },
+        ticks: {
+          color: 'blue',
+        },
+      },
+    },
+    plugins: {
+      legend: { display: true },
+    },
+  };
+
+
 }
