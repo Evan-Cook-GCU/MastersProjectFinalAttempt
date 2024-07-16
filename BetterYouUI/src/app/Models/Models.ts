@@ -14,6 +14,7 @@ export interface Group {
     description: string;
     createdAt: Date;
     metrics: Metric[]; // Added relationship
+    screenElements: ScreenElement[]; // Added relationship
     
 }
 export interface ScreenElement{

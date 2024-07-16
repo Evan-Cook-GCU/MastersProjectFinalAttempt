@@ -6,7 +6,7 @@ import { MetricBuilderComponent } from '../../MetricsComponent/metric-builder/me
 import { MetricListerComponent } from '../../MetricsComponent/metric-lister/metric-lister.component';
 import { MetricsListComponent } from '../../metrics-list/metrics-list.component';
 import { ActivatedRoute } from '@angular/router';
-import { Group, GroupMembership, Metric, MetricData, User } from '../../Models/Models';
+import { Group, GroupMembership, Metric, MetricData, ScreenElement, User } from '../../Models/Models';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/DataServices/user.service';
 import { GroupMembershipService } from '../../services/DataServices/group-membership.service';
@@ -18,11 +18,12 @@ import { Subscription } from 'rxjs';
 import { MembershipManagementComponent } from '../../Components/membership-management/membership-management.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ChatComponent } from "../../Components/chat/chat.component";
+import { GroupDisplayComponent } from "../group-display/group-display.component";
 @Component({
   selector: 'app-group-viewer',
   standalone: true,
   imports: [CommonModule, GraphComponent, MatTabsModule, MatCardModule, MetricBuilderComponent, MetricListerComponent,
-    MetricsListComponent, MembershipManagementComponent, ChatComponent],
+    MetricsListComponent, MembershipManagementComponent, ChatComponent, GroupDisplayComponent],
   templateUrl: './group-viewer.component.html',
   styleUrl: './group-viewer.component.scss'
 })
@@ -35,6 +36,7 @@ export class GroupViewerComponent implements OnInit {
   loggedInUser: User | null = null;
   membership: GroupMembership | null = null;
   membershipsLoaded:boolean=false;
+  layout: ScreenElement[] = [];
   private eventSubscription: Subscription|undefined;
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +49,7 @@ export class GroupViewerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.layout.push({ screenElementId: 1, type: 'graph', configuration: '', groupId: 1 });
     //steps
     //1. Get the groupId from the URL
     const groupId = parseInt(this.route.snapshot.paramMap.get('groupId')!, 10);

@@ -20,6 +20,7 @@ namespace BetterYouApi.Models
         public DbSet<GroupChatMessage> GroupChatMessages { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<ConversationMessage> ConversationMessages { get; set; }
+        public DbSet<ScreenElement> ScreenElements { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ConversationMessage>()

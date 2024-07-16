@@ -27,6 +27,7 @@ namespace BetterYouApi.Models
 
         public virtual ICollection<GroupMembership> GroupMemberships { get; set; }
         public virtual ICollection<Metric> Metrics { get; set; } // Added relationship
+        public virtual ICollection<ScreenElement> screenElements { get; set; }
     }
 
     public class GroupMembership
@@ -46,7 +47,16 @@ namespace BetterYouApi.Models
         public virtual Group Group { get; set; }
         public virtual ICollection<MetricData> MetricData { get; set; } // Added relationship
     }
-
+    public class ScreenElement
+    {
+        [Key]
+        public int screenElementId { get; set; }
+        public string Type { get; set; }
+        public string Configuration { get; set; }
+        public int Order { get; set; }
+        [ForeignKey("Group")]
+        public int GroupId { get; set; }
+    }
     public class Metric
     {
         [Key]

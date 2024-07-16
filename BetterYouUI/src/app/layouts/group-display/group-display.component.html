@@ -1,1 +1,6 @@
-<p>group-display works!</p>
+
+<div *ngFor="let element of layout">
+    <div *ngIf="element.type === 'graph'">
+        <app-graph [metrics]="metrics" [selectedUserId]="selectedUserId"></app-graph>
+  </div>
+  
